@@ -67,6 +67,15 @@ export function PlayerProfileAdmin() {
     queryKey: ["admin-tcg-player-cards", userId],
     queryFn: () => adminListPlayerCards(userId),
   });
+  const { data: wallet } = useQuery({
+    queryKey: ["admin-tcg-player-wallet", userId],
+    queryFn: () => adminGetPlayerWallet(userId),
+  });
+  const { data: achievements } = useQuery({ queryKey: ["tcg-achievements"], queryFn: listAchievements });
+  const { data: playerAch } = useQuery({
+    queryKey: ["admin-tcg-player-achievements", userId],
+    queryFn: () => adminListPlayerAchievements(userId),
+  });
 
   const qty = useMemo(() => {
     const m = new Map<string, number>();
@@ -74,10 +83,38 @@ export function PlayerProfileAdmin() {
     return m;
   }, [owned]);
 
+  const achMap = useMemo(() => {
+    const m = new Map<string, { progress: number; completed: boolean; reward_claimed: boolean }>();
+    (playerAch ?? []).forEach((r) =>
+      m.set(r.achievement_id, {
+        progress: r.progress ?? 0,
+        completed: !!r.completed,
+        reward_claimed: !!r.reward_claimed,
+      }),
+    );
+    return m;
+  }, [playerAch]);
+
+  const achList = achievements ?? [];
+  const achDone = achList.filter((a) => achMap.get(a.id)?.completed).length;
+  const achPct = achList.length ? Math.round((achDone / achList.length) * 100) : 0;
+
+  const fragments = wallet
+    ? [
+        { label: "Comum", value: wallet.common_fragments },
+        { label: "Incomum", value: wallet.uncommon_fragments },
+        { label: "Rara", value: wallet.rare_fragments },
+        { label: "Épica", value: wallet.epic_fragments },
+        { label: "Lendária", value: wallet.legendary_fragments },
+      ]
+    : [];
+  const totalFragments = fragments.reduce((a, f) => a + (f.value ?? 0), 0);
+
   const level = player?.level ?? 1;
   const xp = player?.xp ?? 0;
   const xpNeeded = xpToNextLevel(level);
   const pct = Math.min(100, Math.round((xp / xpNeeded) * 100));
+
 
   return (
     <div>
