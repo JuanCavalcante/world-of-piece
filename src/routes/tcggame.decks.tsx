@@ -52,6 +52,7 @@ function DecksPage() {
   const [q, setQ] = useState("");
   const [rarityFilter, setRarityFilter] = useState<"ALL" | Rarity>("ALL");
   const [costFilter, setCostFilter] = useState<"ALL" | number>("ALL");
+  const [ownedOnly, setOwnedOnly] = useState(true);
 
 
   const { data: cards, isLoading: loadingCards } = useQuery({ 
@@ -217,6 +218,7 @@ function DecksPage() {
       }
       if (rarityFilter !== "ALL" && c.rarity !== rarityFilter) return false;
       if (costFilter !== "ALL" && cost !== costFilter) return false;
+      if (ownedOnly && (qtyInCollection.get(c.id) ?? 0) <= 0) return false;
       return true;
   });
 
