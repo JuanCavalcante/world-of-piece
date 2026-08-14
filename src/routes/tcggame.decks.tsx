@@ -383,6 +383,14 @@ function DecksPage() {
                                     <option key={n} value={n}>Custo {n}</option>
                                 ))}
                             </select>
+                            <button
+                                type="button"
+                                onClick={() => setOwnedOnly(v => !v)}
+                                aria-pressed={ownedOnly}
+                                className={`px-3 py-1.5 text-[10px] uppercase tracking-widest rounded-lg border transition-colors ${ownedOnly ? "bg-gold/15 border-gold/50 text-gold" : "bg-sea-surface/60 border-gold/15 text-parchment/50 hover:border-gold/30"}`}
+                            >
+                                Só obtidas
+                            </button>
 
                         </div>
                     </div>
