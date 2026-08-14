@@ -2,9 +2,11 @@ import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import { AdminLink } from "@/lib/admin/base";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
-import { ArrowLeft, Layers, BookOpen, Star, Trophy, Skull, Lock } from "lucide-react";
+import { ArrowLeft, Layers, BookOpen, Star, Trophy, Skull, Lock, Gem, FlaskConical, Award } from "lucide-react";
 import {
   adminGetTcgPlayer,
+  adminGetPlayerWallet,
+  adminListPlayerAchievements,
   adminListPlayerCards,
   listCards,
   RARITIES,
@@ -14,8 +16,10 @@ import {
   type Rarity,
   type TcgCard,
 } from "@/lib/tcg/api";
+import { listAchievements, CATEGORY_LABEL, type AchievementCategory } from "@/lib/tcg/achievements";
 import { CardCost } from "@/components/tcg/card-cost";
 import { Skeleton } from "@/components/ui/skeleton";
+
 
 export const Route = createFileRoute("/admin/woptcg/jogador/$userId")({
   component: PlayerProfileAdmin,
