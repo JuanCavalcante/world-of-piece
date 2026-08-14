@@ -116,6 +116,10 @@ function ProfilePage() {
         </div>
       </div>
 
+      <CompetitiveSection level={level} xp={xp} />
+
+
+
       <section className="mt-8">
         <div className="flex items-center justify-between gap-3 mb-4">
           <div>
