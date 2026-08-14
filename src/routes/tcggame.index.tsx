@@ -20,6 +20,7 @@ import {
 } from "@/lib/tcg/achievements";
 import { getMyWallet } from "@/lib/tcg/wallet";
 import { listMarketListings } from "@/lib/tcg/market";
+import { getMyRanking, getMyStats } from "@/lib/tcg/rank";
 
 export const Route = createFileRoute("/tcggame/")({
   head: () => ({
@@ -119,6 +120,16 @@ function TcgHome() {
     queryKey: ["tcg-market-listings"],
     queryFn: listMarketListings,
     staleTime: 30_000,
+  });
+  const { data: stats } = useQuery({
+    queryKey: ["tcg-my-stats", user?.id],
+    queryFn: getMyStats,
+    enabled: !!user?.id,
+  });
+  const { data: vrRank } = useQuery({
+    queryKey: ["tcg-my-ranking", "VR", user?.id],
+    queryFn: () => getMyRanking("VR"),
+    enabled: !!user?.id,
   });
 
   const essence = wallet?.essence ?? 0;
