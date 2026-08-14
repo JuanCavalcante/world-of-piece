@@ -1,0 +1,173 @@
+import { createFileRoute, Link, useParams } from "@tanstack/react-router";
+import { AdminLink } from "@/lib/admin/base";
+import { useQuery } from "@tanstack/react-query";
+import { useMemo } from "react";
+import { ArrowLeft, Layers, BookOpen, Star, Trophy, Skull, Lock } from "lucide-react";
+import {
+  adminGetTcgPlayer,
+  adminListPlayerCards,
+  listCards,
+  RARITIES,
+  RARITY_LABEL,
+  RARITY_STYLE,
+  xpToNextLevel,
+  type Rarity,
+  type TcgCard,
+} from "@/lib/tcg/api";
+import { CardCost } from "@/components/tcg/card-cost";
+import { Skeleton } from "@/components/ui/skeleton";
+
+export const Route = createFileRoute("/admin/woptcg/jogador/$userId")({
+  component: PlayerProfileAdmin,
+});
+
+const rarityOf = (c: TcgCard): Rarity =>
+  (RARITIES.includes(c.rarity as Rarity) ? c.rarity : "COMUM") as Rarity;
+
+function Stat({
+  icon: Icon,
+  label,
+  value,
+  hint,
+  accent = "text-gold",
+}: {
+  icon: typeof Layers;
+  label: string;
+  value: string;
+  hint: string;
+  accent?: string;
+}) {
+  return (
+    <div className="rounded-2xl border border-gold/20 bg-sea-surface/40 p-5">
+      <div className="flex items-center gap-3 mb-3">
+        <span className="grid place-items-center size-9 rounded-xl bg-sea-deep/60 border border-gold/20">
+          <Icon className={`size-4 ${accent}`} />
+        </span>
+        <h2 className="font-display text-[11px] tracking-[0.2em] uppercase text-parchment/80">{label}</h2>
+      </div>
+      <p className="text-2xl font-display text-parchment">{value}</p>
+      <p className="text-[10px] tracking-wider uppercase text-parchment/40 mt-1">{hint}</p>
+    </div>
+  );
+}
+
+export function PlayerProfileAdmin() {
+  const { userId } = useParams({ strict: false }) as { userId: string };
+
+  const { data: player, isLoading } = useQuery({
+    queryKey: ["admin-tcg-player", userId],
+    queryFn: () => adminGetTcgPlayer(userId),
+  });
+  const { data: cards } = useQuery({ queryKey: ["tcg-cards", "ACTIVE"], queryFn: () => listCards("ACTIVE") });
+  const { data: owned } = useQuery({
+    queryKey: ["admin-tcg-player-cards", userId],
+    queryFn: () => adminListPlayerCards(userId),
+  });
+
+  const qty = useMemo(() => {
+    const m = new Map<string, number>();
+    (owned ?? []).forEach((r) => m.set(r.card_id, r.quantity));
+    return m;
+  }, [owned]);
+
+  const level = player?.level ?? 1;
+  const xp = player?.xp ?? 0;
+  const xpNeeded = xpToNextLevel(level);
+  const pct = Math.min(100, Math.round((xp / xpNeeded) * 100));
+
+  return (
+    <div>
+      <AdminLink
+        to="/woptcg/jogadores"
+        className="inline-flex items-center gap-2 text-[11px] tracking-widest uppercase text-parchment/60 hover:text-gold mb-5"
+      >
+        <ArrowLeft className="size-3.5" /> Voltar aos jogadores
+      </AdminLink>
+
+      {isLoading ? (
+        <Skeleton className="h-24 bg-sea-surface/40" />
+      ) : !player ? (
+        <p className="text-sm text-parchment/60">Jogador não encontrado.</p>
+      ) : (
+        <>
+          <p className="text-[11px] tracking-[0.3em] uppercase text-gold/70 mb-2">Perfil do jogador</p>
+          <h2 className="font-display text-2xl mb-6">{player.username || player.email}</h2>
+
+          {/* Painel do jogador */}
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+            <Stat icon={Star} label="Nível" value={`Nível ${level}`} hint={`${xp} / ${xpNeeded} XP`} />
+            <Stat icon={Layers} label="Cartas obtidas" value={String((owned ?? []).length)} hint="Na coleção" />
+            <Stat icon={BookOpen} label="Cartas existentes" value={String((cards ?? []).length)} hint="No catálogo" />
+            <Stat icon={Trophy} label="Vitórias" value={String(player.wins ?? 0)} hint="Duelos" />
+            <Stat icon={Skull} label="Derrotas" value={String(player.losses ?? 0)} hint="Duelos" accent="text-wop-red" />
+          </div>
+
+          <div className="mt-6 rounded-2xl border border-gold/20 bg-sea-surface/40 p-6">
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-[11px] tracking-[0.3em] uppercase text-gold/70">Experiência</p>
+              <p className="text-xs text-parchment/60">
+                {xp} / {xpNeeded} XP · Nível {level}
+              </p>
+            </div>
+            <div className="h-3 rounded-full bg-sea-deep/70 border border-gold/15 overflow-hidden">
+              <div
+                className="h-full bg-gradient-primary transition-all duration-700"
+                style={{ width: `${Math.max(4, pct)}%` }}
+              />
+            </div>
+          </div>
+
+          {/* Cartas */}
+          <p className="text-[11px] tracking-[0.3em] uppercase text-gold/70 mt-8 mb-4">Cartas</p>
+          <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
+            {(cards ?? []).map((c) => {
+              const n = qty.get(c.id) ?? 0;
+              const has = n > 0;
+              const r = rarityOf(c);
+              return (
+                <div
+                  key={c.id}
+                  className={`relative rounded-2xl border overflow-hidden bg-sea-surface/40 ${RARITY_STYLE[r]} ${
+                    has ? "" : "opacity-80"
+                  }`}
+                >
+                  <div className="aspect-[5/7] w-full overflow-hidden bg-sea-deep/60 relative">
+                    {c.image_url ? (
+                      <img
+                        src={c.image_url}
+                        alt={c.name}
+                        loading="lazy"
+                        className={`size-full object-cover ${has ? "" : "grayscale brightness-50"}`}
+                      />
+                    ) : (
+                      <div className="size-full grid place-items-center text-[11px] uppercase text-parchment/30">
+                        Sem imagem
+                      </div>
+                    )}
+                    <CardCost cost={c.cost ?? 0} />
+                    {!has && (
+                      <span className="absolute inset-0 grid place-items-center">
+                        <Lock className="size-7 text-parchment/70 drop-shadow" />
+                      </span>
+                    )}
+                    {has && n > 1 && (
+                      <span className="absolute top-2 right-2 px-2 py-1 rounded-full text-[9px] bg-black/60 text-parchment border border-gold/30">
+                        x{n}
+                      </span>
+                    )}
+                  </div>
+                  <div className="p-3 border-t border-gold/10">
+                    <p className="text-sm truncate">{c.name}</p>
+                    <p className="text-[10px] tracking-[0.2em] uppercase text-gold/70 mt-1">
+                      {RARITY_LABEL[r]} · {c.power} HP
+                    </p>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        </>
+      )}
+    </div>
+  );
+}

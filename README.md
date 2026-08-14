@@ -1,12 +1,12 @@
-# World-of-Piece
+# Word of Piece v2
 
-olá
+Projeto 15/07/2026, 14:36:37
 
 This project was built with [Lovable](https://lovable.dev).
 
 ## Build with Lovable
 
-Continue developing this project in the [Lovable editor](https://lovable.dev/projects/a7bb7ed0-e54c-4245-a156-dcc7698653e6).
+Continue developing this project in the [Lovable editor](https://lovable.dev/projects/11b488e6-b88d-4d93-84bf-ab8e7461d42c).
 
 - **Ship faster**: describe what you want to build and Lovable handles the code.
 - **Stay in sync**: every change made in Lovable is committed straight to this repository.
