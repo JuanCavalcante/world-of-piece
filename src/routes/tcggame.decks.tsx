@@ -359,7 +359,7 @@ function DecksPage() {
                                 <input 
                                     value={q}
                                     onChange={(e) => setQ(e.target.value)}
-                                    placeholder="Buscar..."
+                                    placeholder="Buscar por nome ou custo..."
                                     className="w-full bg-sea-surface/60 border border-gold/15 pl-8 pr-3 py-1.5 text-xs rounded-lg focus:outline-none focus:border-gold"
                                 />
                             </div>
@@ -371,6 +371,17 @@ function DecksPage() {
                                 <option value="ALL">Todas</option>
                                 {RARITIES.map(r => <option key={r} value={r}>{RARITY_LABEL[r]}</option>)}
                             </select>
+                            <select
+                                value={String(costFilter)}
+                                onChange={(e) => setCostFilter(e.target.value === "ALL" ? "ALL" : Number(e.target.value))}
+                                className="bg-sea-surface/60 border border-gold/15 px-3 py-1.5 text-xs rounded-lg focus:outline-none text-parchment/70"
+                            >
+                                <option value="ALL">Todos os custos</option>
+                                {Array.from({ length: 11 }, (_, i) => i).map(n => (
+                                    <option key={n} value={n}>Custo {n}</option>
+                                ))}
+                            </select>
+
                         </div>
                     </div>
 
