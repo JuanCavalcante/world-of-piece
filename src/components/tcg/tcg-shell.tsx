@@ -16,7 +16,7 @@ import { useProgression } from "@/hooks/use-progression";
 import { WalletDisplay } from "@/components/tcg/wallet-display";
 
 type TcgNavItem = {
-  to: "/tcggame" | "/tcggame/cards" | "/tcggame/decks" | "/tcggame/duels" | "/tcggame/achievements" | "/tcggame/daily" | "/tcggame/trade" | "/tcggame/craft" | "/tcggame/ranking";
+  to: "/tcggame" | "/tcggame/cards" | "/tcggame/decks" | "/tcggame/duels" | "/tcggame/achievements" | "/tcggame/daily" | "/tcggame/trade" | "/tcggame/craft" | "/tcggame/rank";
   label: string;
   icon: typeof LayoutDashboard;
   exact?: boolean;
@@ -30,7 +30,7 @@ const NAV: TcgNavItem[] = [
   { to: "/tcggame/daily", label: "Diárias", icon: CalendarCheck },
   { to: "/tcggame/craft", label: "Criação", icon: Hammer },
   { to: "/tcggame/trade", label: "Trocas", icon: ArrowLeftRight },
-  { to: "/tcggame/ranking", label: "Rank", icon: Medal },
+  { to: "/tcggame/rank", label: "Rank", icon: Medal },
   { to: "/tcggame/duels", label: "Duelos", icon: Swords },
 ];
 

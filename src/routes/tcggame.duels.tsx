@@ -13,13 +13,14 @@ import {
   listCards,
   listMyDecks,
   listDuelHistory,
-  saveDuelMatch,
   getAiBannerUrl,
   RARITY_STYLE,
   type Rarity,
   RARITIES,
   type TcgCard,
 } from "@/lib/tcg/api";
+import { finishMatch, type DuelReward } from "@/lib/tcg/rank";
+import { DuelResultDialog } from "@/components/tcg/duel-result-dialog";
 import {
 
   createDuel,
@@ -89,6 +90,7 @@ function DuelsPage() {
   const [selected, setSelected] = useState<string | null>(null);
   const [zoom, setZoom] = useState<InPlayCard | null>(null);
   const [confirmSurrender, setConfirmSurrender] = useState(false);
+  const [reward, setReward] = useState<DuelReward | null>(null);
   const savedRef = useRef(false);
 
   const cardsMap = useMemo(() => {
@@ -161,12 +163,12 @@ function DuelsPage() {
       if (!live || savedRef.current) return;
       savedRef.current = true;
       liveRef.current = null;
-      void saveDuelMatch({
-        userId: live.userId,
-        winner: live.game.foe.name,
-        loser: live.game.you.name,
+      void finishMatch({
+        winnerId: null,
+        loserId: live.userId,
         turns: live.game.turnCount,
-        won: false,
+        winnerName: live.game.foe.name,
+        loserName: live.game.you.name,
       }).catch(() => undefined);
     };
     const onUnload = () => abandon();
@@ -181,35 +183,36 @@ function DuelsPage() {
     if (!game?.over || savedRef.current || !user?.id) return;
     savedRef.current = true;
     const youWon = game.winner === "you";
-    saveDuelMatch({
-      userId: user.id,
-      winner: youWon ? game.you.name : game.foe.name,
-      loser: youWon ? game.foe.name : game.you.name,
-      turns: game.turnCount,
-      won: youWon,
+    const turns = game.turnCount;
+    finishMatch({
+      winnerId: youWon ? user.id : null,
+      loserId: youWon ? null : user.id,
+      turns,
+      winnerName: youWon ? game.you.name : game.foe.name,
+      loserName: youWon ? game.foe.name : game.you.name,
     })
-      .then(async () => {
-        toast.success(youWon ? "Vitória registrada!" : "Derrota registrada.");
+      .then(async (rows) => {
+        const mine = rows.find((r) => r.user_id === user.id) ?? null;
+        setReward(mine);
         await progression.daily("DAILY_MATCHES_PLAYED", 1);
         if (youWon) await progression.daily("DAILY_MATCHES_WON", 1);
         await progression.sync();
         qc.invalidateQueries({ queryKey: ["tcg-duel-history", user.id] });
         qc.invalidateQueries({ queryKey: ["tcg-player", user.id] });
+        qc.invalidateQueries({ queryKey: ["tcg-my-stats", user.id] });
+        qc.invalidateQueries({ queryKey: ["tcg-ranking"] });
+        qc.invalidateQueries({ queryKey: ["tcg-my-ranking"] });
       })
       .catch(() => toast.error("Não foi possível salvar o resultado."));
   }, [game?.over, user?.id]);
 
-  // Ao terminar o duelo, volta automaticamente para a página inicial dos duelos.
-  useEffect(() => {
-    if (!game?.over) return;
-    const t = setTimeout(() => {
-      setGame(null);
-      setZoom(null);
-      setSelected(null);
-      setConfirmSurrender(false);
-    }, 2600);
-    return () => clearTimeout(t);
-  }, [game?.over]);
+  function closeResult() {
+    setReward(null);
+    setGame(null);
+    setZoom(null);
+    setSelected(null);
+    setConfirmSurrender(false);
+  }
 
   function start() {
     if (!pool?.length) {

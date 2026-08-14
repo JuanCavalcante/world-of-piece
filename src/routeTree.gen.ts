@@ -37,6 +37,7 @@ import { Route as TcggameDailyRouteImport } from './routes/tcggame.daily'
 import { Route as TcggameDecksRouteImport } from './routes/tcggame.decks'
 import { Route as TcggameDuelsRouteImport } from './routes/tcggame.duels'
 import { Route as TcggameProfile_Char123nameChar125RouteImport } from './routes/tcggame.profile_{$name}'
+import { Route as TcggameRankRouteImport } from './routes/tcggame.rank'
 import { Route as TcggameRankingRouteImport } from './routes/tcggame.ranking'
 import { Route as TcggameTradeRouteImport } from './routes/tcggame.trade'
 import { Route as AuthenticatedPersonagensIndexRouteImport } from './routes/_authenticated/personagens.index'
@@ -59,6 +60,7 @@ import { Route as AdmindevWoptcgIndexRouteImport } from './routes/admindev.woptc
 import { Route as AdmindevWoptcgBannerdueloRouteImport } from './routes/admindev.woptcg.bannerduelo'
 import { Route as AdmindevWoptcgCartasRouteImport } from './routes/admindev.woptcg.cartas'
 import { Route as AdmindevWoptcgJogadoresRouteImport } from './routes/admindev.woptcg.jogadores'
+import { Route as TcggameProfileNicknameRouteImport } from './routes/tcggame.profile.$nickname'
 import { Route as AdminWoptcgJogadorUserIdRouteImport } from './routes/admin.woptcg.jogador.$userId'
 import { Route as AdmindevWoptcgJogadorUserIdRouteImport } from './routes/admindev.woptcg.jogador.$userId'
 
@@ -202,6 +204,11 @@ const TcggameProfile_Char123nameChar125Route =
     path: '/profile_{$name}',
     getParentRoute: () => TcggameRoute,
   } as any)
+const TcggameRankRoute = TcggameRankRouteImport.update({
+  id: '/rank',
+  path: '/rank',
+  getParentRoute: () => TcggameRoute,
+} as any)
 const TcggameRankingRoute = TcggameRankingRouteImport.update({
   id: '/ranking',
   path: '/ranking',
@@ -315,6 +322,11 @@ const AdmindevWoptcgJogadoresRoute = AdmindevWoptcgJogadoresRouteImport.update({
   path: '/jogadores',
   getParentRoute: () => AdmindevWoptcgRoute,
 } as any)
+const TcggameProfileNicknameRoute = TcggameProfileNicknameRouteImport.update({
+  id: '/profile/$nickname',
+  path: '/profile/$nickname',
+  getParentRoute: () => TcggameRoute,
+} as any)
 const AdminWoptcgJogadorUserIdRoute =
   AdminWoptcgJogadorUserIdRouteImport.update({
     id: '/jogador/$userId',
@@ -353,6 +365,7 @@ export interface FileRoutesByFullPath {
   '/tcggame/decks': typeof TcggameDecksRoute
   '/tcggame/duels': typeof TcggameDuelsRoute
   '/tcggame/profile_{$name}': typeof TcggameProfile_Char123nameChar125Route
+  '/tcggame/rank': typeof TcggameRankRoute
   '/tcggame/ranking': typeof TcggameRankingRoute
   '/tcggame/trade': typeof TcggameTradeRoute
   '/admin/': typeof AdminIndexRoute
@@ -371,6 +384,7 @@ export interface FileRoutesByFullPath {
   '/admindev/woptcg/bannerduelo': typeof AdmindevWoptcgBannerdueloRoute
   '/admindev/woptcg/cartas': typeof AdmindevWoptcgCartasRoute
   '/admindev/woptcg/jogadores': typeof AdmindevWoptcgJogadoresRoute
+  '/tcggame/profile/$nickname': typeof TcggameProfileNicknameRoute
   '/personagens/': typeof AuthenticatedPersonagensIndexRoute
   '/admin/crews/': typeof AdminCrewsIndexRoute
   '/admin/npcs/': typeof AdminNpcsIndexRoute
@@ -401,6 +415,7 @@ export interface FileRoutesByTo {
   '/tcggame/decks': typeof TcggameDecksRoute
   '/tcggame/duels': typeof TcggameDuelsRoute
   '/tcggame/profile_{$name}': typeof TcggameProfile_Char123nameChar125Route
+  '/tcggame/rank': typeof TcggameRankRoute
   '/tcggame/ranking': typeof TcggameRankingRoute
   '/tcggame/trade': typeof TcggameTradeRoute
   '/admin': typeof AdminIndexRoute
@@ -419,6 +434,7 @@ export interface FileRoutesByTo {
   '/admindev/woptcg/bannerduelo': typeof AdmindevWoptcgBannerdueloRoute
   '/admindev/woptcg/cartas': typeof AdmindevWoptcgCartasRoute
   '/admindev/woptcg/jogadores': typeof AdmindevWoptcgJogadoresRoute
+  '/tcggame/profile/$nickname': typeof TcggameProfileNicknameRoute
   '/personagens': typeof AuthenticatedPersonagensIndexRoute
   '/admin/crews': typeof AdminCrewsIndexRoute
   '/admin/npcs': typeof AdminNpcsIndexRoute
@@ -456,6 +472,7 @@ export interface FileRoutesById {
   '/tcggame/decks': typeof TcggameDecksRoute
   '/tcggame/duels': typeof TcggameDuelsRoute
   '/tcggame/profile_{$name}': typeof TcggameProfile_Char123nameChar125Route
+  '/tcggame/rank': typeof TcggameRankRoute
   '/tcggame/ranking': typeof TcggameRankingRoute
   '/tcggame/trade': typeof TcggameTradeRoute
   '/admin/': typeof AdminIndexRoute
@@ -474,6 +491,7 @@ export interface FileRoutesById {
   '/admindev/woptcg/bannerduelo': typeof AdmindevWoptcgBannerdueloRoute
   '/admindev/woptcg/cartas': typeof AdmindevWoptcgCartasRoute
   '/admindev/woptcg/jogadores': typeof AdmindevWoptcgJogadoresRoute
+  '/tcggame/profile/$nickname': typeof TcggameProfileNicknameRoute
   '/_authenticated/personagens/': typeof AuthenticatedPersonagensIndexRoute
   '/admin/crews/': typeof AdminCrewsIndexRoute
   '/admin/npcs/': typeof AdminNpcsIndexRoute
@@ -511,6 +529,7 @@ export interface FileRouteTypes {
     | '/tcggame/decks'
     | '/tcggame/duels'
     | '/tcggame/profile_{$name}'
+    | '/tcggame/rank'
     | '/tcggame/ranking'
     | '/tcggame/trade'
     | '/admin/'
@@ -529,6 +548,7 @@ export interface FileRouteTypes {
     | '/admindev/woptcg/bannerduelo'
     | '/admindev/woptcg/cartas'
     | '/admindev/woptcg/jogadores'
+    | '/tcggame/profile/$nickname'
     | '/personagens/'
     | '/admin/crews/'
     | '/admin/npcs/'
@@ -559,6 +579,7 @@ export interface FileRouteTypes {
     | '/tcggame/decks'
     | '/tcggame/duels'
     | '/tcggame/profile_{$name}'
+    | '/tcggame/rank'
     | '/tcggame/ranking'
     | '/tcggame/trade'
     | '/admin'
@@ -577,6 +598,7 @@ export interface FileRouteTypes {
     | '/admindev/woptcg/bannerduelo'
     | '/admindev/woptcg/cartas'
     | '/admindev/woptcg/jogadores'
+    | '/tcggame/profile/$nickname'
     | '/personagens'
     | '/admin/crews'
     | '/admin/npcs'
@@ -613,6 +635,7 @@ export interface FileRouteTypes {
     | '/tcggame/decks'
     | '/tcggame/duels'
     | '/tcggame/profile_{$name}'
+    | '/tcggame/rank'
     | '/tcggame/ranking'
     | '/tcggame/trade'
     | '/admin/'
@@ -631,6 +654,7 @@ export interface FileRouteTypes {
     | '/admindev/woptcg/bannerduelo'
     | '/admindev/woptcg/cartas'
     | '/admindev/woptcg/jogadores'
+    | '/tcggame/profile/$nickname'
     | '/_authenticated/personagens/'
     | '/admin/crews/'
     | '/admin/npcs/'
@@ -850,6 +874,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof TcggameProfile_Char123nameChar125RouteImport
       parentRoute: typeof TcggameRoute
     }
+    '/tcggame/rank': {
+      id: '/tcggame/rank'
+      path: '/rank'
+      fullPath: '/tcggame/rank'
+      preLoaderRoute: typeof TcggameRankRouteImport
+      parentRoute: typeof TcggameRoute
+    }
     '/tcggame/ranking': {
       id: '/tcggame/ranking'
       path: '/ranking'
@@ -1004,6 +1035,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdmindevWoptcgJogadoresRouteImport
       parentRoute: typeof AdmindevWoptcgRoute
     }
+    '/tcggame/profile/$nickname': {
+      id: '/tcggame/profile/$nickname'
+      path: '/profile/$nickname'
+      fullPath: '/tcggame/profile/$nickname'
+      preLoaderRoute: typeof TcggameProfileNicknameRouteImport
+      parentRoute: typeof TcggameRoute
+    }
     '/admin/woptcg/jogador/$userId': {
       id: '/admin/woptcg/jogador/$userId'
       path: '/jogador/$userId'
@@ -1147,9 +1185,11 @@ interface TcggameRouteChildren {
   TcggameDecksRoute: typeof TcggameDecksRoute
   TcggameDuelsRoute: typeof TcggameDuelsRoute
   TcggameProfile_Char123nameChar125Route: typeof TcggameProfile_Char123nameChar125Route
+  TcggameRankRoute: typeof TcggameRankRoute
   TcggameRankingRoute: typeof TcggameRankingRoute
   TcggameTradeRoute: typeof TcggameTradeRoute
   TcggameIndexRoute: typeof TcggameIndexRoute
+  TcggameProfileNicknameRoute: typeof TcggameProfileNicknameRoute
 }
 
 const TcggameRouteChildren: TcggameRouteChildren = {
@@ -1161,9 +1201,11 @@ const TcggameRouteChildren: TcggameRouteChildren = {
   TcggameDuelsRoute: TcggameDuelsRoute,
   TcggameProfile_Char123nameChar125Route:
     TcggameProfile_Char123nameChar125Route,
+  TcggameRankRoute: TcggameRankRoute,
   TcggameRankingRoute: TcggameRankingRoute,
   TcggameTradeRoute: TcggameTradeRoute,
   TcggameIndexRoute: TcggameIndexRoute,
+  TcggameProfileNicknameRoute: TcggameProfileNicknameRoute,
 }
 
 const TcggameRouteWithChildren =
