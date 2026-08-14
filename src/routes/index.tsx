@@ -5,6 +5,25 @@ import heroShip from "@/assets/supernovas-bg.png";
 
 export const Route = createFileRoute("/")({
   component: LandingPage,
+  head: () => ({
+    meta: [
+      { title: "World Of Piece" },
+      { name: "description", content: "Hub oficial do RPG de Mesa World Of Piece." },
+      { property: "og:title", content: "World Of Piece" },
+      { property: "og:description", content: "Hub oficial do RPG de Mesa World Of Piece." },
+      { property: "og:image", content: "https://imgur.com/nj9Nmxx.jpg" },
+      { property: "og:image:alt", content: "World Of Piece — Hub oficial do RPG de Mesa" },
+      { property: "og:image:width", content: "1200" },
+      { property: "og:image:height", content: "630" },
+      { property: "og:url", content: "https://world-of-piece.vercel.app/" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
+      { name: "twitter:title", content: "World Of Piece" },
+      { name: "twitter:description", content: "Hub oficial do RPG de Mesa World Of Piece." },
+      { name: "twitter:image", content: "https://imgur.com/nj9Nmxx.jpg" },
+    ],
+    links: [{ rel: "canonical", href: "https://world-of-piece.vercel.app/" }],
+  }),
 });
 
 function LandingPage() {
