@@ -141,7 +141,46 @@ export function PlayerProfileAdmin() {
             <Stat icon={BookOpen} label="Cartas existentes" value={String((cards ?? []).length)} hint="No catálogo" />
             <Stat icon={Trophy} label="Vitórias" value={String(player.wins ?? 0)} hint="Duelos" />
             <Stat icon={Skull} label="Derrotas" value={String(player.losses ?? 0)} hint="Duelos" accent="text-wop-red" />
+            <Stat
+              icon={FlaskConical}
+              label="Essência"
+              value={String(wallet?.essence ?? 0)}
+              hint="Moeda do mercado"
+              accent="text-fuchsia-400"
+            />
+            <Stat
+              icon={Gem}
+              label="Fragmentos"
+              value={String(totalFragments)}
+              hint="Total de todas as raridades"
+              accent="text-sky-400"
+            />
+            <Stat
+              icon={Award}
+              label="Conquistas"
+              value={`${achDone} / ${achList.length}`}
+              hint={`${achPct}% concluído`}
+            />
           </div>
+
+          {/* Fragmentos por raridade */}
+          <div className="mt-6 rounded-2xl border border-gold/20 bg-sea-surface/40 p-6">
+            <p className="text-[11px] tracking-[0.3em] uppercase text-gold/70 mb-4">Fragmentos por raridade</p>
+            <div className="flex flex-wrap gap-2">
+              {fragments.map((f) => (
+                <span
+                  key={f.label}
+                  className="flex items-center gap-1.5 rounded-lg border border-sky-400/25 bg-sky-500/10 px-3 py-1.5 text-[11px] tracking-wider uppercase text-sky-200"
+                >
+                  <Gem className="size-3.5" /> {f.label}: {f.value ?? 0}
+                </span>
+              ))}
+              {fragments.length === 0 && (
+                <span className="text-xs text-parchment/50">Carteira sem dados.</span>
+              )}
+            </div>
+          </div>
+
 
           <div className="mt-6 rounded-2xl border border-gold/20 bg-sea-surface/40 p-6">
             <div className="flex items-center justify-between mb-3">
