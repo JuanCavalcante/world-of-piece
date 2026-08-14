@@ -2,6 +2,8 @@ import { createFileRoute, Outlet, redirect, Link, useRouterState } from "@tansta
 import { supabase } from "@/lib/supabase";
 import { ArrowLeft, Users, Package, Inbox, Ghost, Anchor, Layers, ShieldAlert } from "lucide-react";
 import { AdminBaseProvider, AdminLink, type AdminBase } from "@/lib/admin/base";
+import { ResetAllTcgButton } from "@/components/admin/reset-all-tcg";
+
 
 export async function requireAdmin() {
   const { data: sess } = await supabase.auth.getSession();
