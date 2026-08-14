@@ -290,6 +290,24 @@ function TcgHome() {
           hint={`${wins + losses} duelos disputados`}
           accent="text-wop-red"
         />
+        <Link
+          to="/tcggame/rank"
+          className="rounded-2xl border border-gold/30 bg-sea-surface/40 p-6 transition-colors hover:border-gold/60"
+        >
+          <div className="mb-3 flex items-center gap-2">
+            <Trophy className="size-4 text-gold" />
+            <p className="text-[10px] uppercase tracking-[0.2em] text-parchment/60">Valor de Recompensa</p>
+          </div>
+          <p className="font-display text-3xl text-gold tabular-nums">{stats?.vr ?? 0} VR</p>
+          <p className="mt-1 text-[10px] uppercase tracking-widest text-parchment/40">
+            {vrRank ? `${vrRank.rank}º de ${vrRank.total} no ranking` : "Sem posição ainda"}
+          </p>
+          <p className="mt-2 text-[10px] uppercase tracking-widest text-parchment/50">
+            Sequência {stats?.win_streak ?? 0} · Melhor {stats?.best_win_streak ?? 0}
+          </p>
+        </Link>
+
+
 
       </div>
 
