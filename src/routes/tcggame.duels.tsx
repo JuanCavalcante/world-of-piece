@@ -229,6 +229,7 @@ function DuelsPage() {
       return;
     }
     savedRef.current = false;
+    setReward(null);
     setZoom(null);
     setSelected(null);
     setConfirmSurrender(false);
@@ -598,13 +599,13 @@ function DuelsPage() {
       )}
 
       {/* Fim de duelo */}
-      {game.over && (
+      {game.over && !reward && (
         <div className="absolute inset-0 z-20 grid place-items-center bg-black/75 backdrop-blur-sm p-6">
           <div className="rounded-2xl border border-gold/30 bg-sea-surface/95 p-8 text-center">
             <p className="font-display text-2xl mb-2">{game.winner === "you" ? "Vitória!" : "Derrota"}</p>
             <p className="text-xs text-parchment/60 mb-5">Duelo encerrado em {game.turnCount} turnos.</p>
             <button
-              onClick={() => setGame(null)}
+              onClick={closeResult}
               className="px-5 py-2.5 rounded-xl bg-gradient-primary text-[11px] tracking-widest uppercase"
             >
               Voltar aos duelos
@@ -612,6 +613,8 @@ function DuelsPage() {
           </div>
         </div>
       )}
+
+      <DuelResultDialog reward={reward} turns={game.turnCount} onClose={closeResult} />
     </div>
 
       {/* Coluna direita: jogador */}
