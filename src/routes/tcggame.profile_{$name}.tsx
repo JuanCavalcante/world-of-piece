@@ -6,6 +6,7 @@ import { UserRound, Save, Star, Check, Image as ImageIcon } from "lucide-react";
 import { TcgPageHeader } from "@/components/tcg/tcg-shell";
 import { useAuth } from "@/hooks/use-auth";
 import { ensureTcgPlayer, listBanners, setMyBanner, updateMyTcgProfile, xpToNextLevel } from "@/lib/tcg/api";
+import { getMyRanking, getMyStats, winRatePct } from "@/lib/tcg/rank";
 
 export const Route = createFileRoute("/tcggame/profile_{$name}")({
   head: () => ({
@@ -20,6 +21,56 @@ export const Route = createFileRoute("/tcggame/profile_{$name}")({
   }),
   component: ProfilePage,
 });
+
+function CompetitiveStat({ label, value, hint }: { label: string; value: string; hint?: string }) {
+  return (
+    <div className="rounded-2xl border border-gold/20 bg-sea-surface/40 p-4">
+      <p className="text-[10px] uppercase tracking-[0.2em] text-parchment/50">{label}</p>
+      <p className="mt-1 font-display text-2xl text-parchment tabular-nums">{value}</p>
+      {hint && <p className="mt-1 text-[10px] uppercase tracking-widest text-parchment/40">{hint}</p>}
+    </div>
+  );
+}
+
+function CompetitiveSection({ level, xp }: { level: number; xp: number }) {
+  const { user } = useAuth();
+  const { data: stats } = useQuery({
+    queryKey: ["tcg-my-stats", user?.id],
+    queryFn: getMyStats,
+    enabled: !!user?.id,
+  });
+  const { data: vrRank } = useQuery({
+    queryKey: ["tcg-my-ranking", "VR", user?.id],
+    queryFn: () => getMyRanking("VR"),
+    enabled: !!user?.id,
+  });
+  const { data: levelRank } = useQuery({
+    queryKey: ["tcg-my-ranking", "LEVEL", user?.id],
+    queryFn: () => getMyRanking("LEVEL"),
+    enabled: !!user?.id,
+  });
+
+  const wins = stats?.wins ?? 0;
+  const losses = stats?.losses ?? 0;
+
+  return (
+    <section className="mt-8">
+      <div className="mb-4">
+        <h2 className="font-display text-xl tracking-wide">Desempenho competitivo</h2>
+        <p className="mt-1 text-xs text-parchment/50">
+          O Valor de Recompensa (VR) é uma pontuação de prestígio — não pode ser usado como moeda.
+        </p>
+      </div>
+      <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+        <CompetitiveStat label="Valor de Recompensa" value={`${stats?.vr ?? 0} VR`} hint={vrRank ? `${vrRank.rank}º de ${vrRank.total}` : "Sem posição"} />
+        <CompetitiveStat label="Vitórias" value={String(wins)} hint={`${losses} derrotas`} />
+        <CompetitiveStat label="Taxa de vitória" value={`${winRatePct(wins, losses)}%`} hint={`${wins + losses} duelos`} />
+        <CompetitiveStat label="Sequência atual" value={String(stats?.win_streak ?? 0)} hint={`Melhor: ${stats?.best_win_streak ?? 0}`} />
+        <CompetitiveStat label="Nível" value={String(level)} hint={levelRank ? `${levelRank.rank}º de ${levelRank.total}` : `${xp} XP`} />
+      </div>
+    </section>
+  );
+}
 
 function ProfilePage() {
   const { user } = useAuth();
