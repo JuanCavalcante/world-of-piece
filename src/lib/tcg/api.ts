@@ -233,6 +233,42 @@ export async function adminResetTcgAccount(userId: string) {
   if (error) throw error;
 }
 
+export async function adminResetAllTcgAccounts(): Promise<number> {
+  const { data, error } = await (supabase as any).rpc("admin_tcg_reset_all_accounts");
+  if (error) throw error;
+  return Number(data ?? 0);
+}
+
+export type AdminPlayerWallet = {
+  essence: number;
+  common_fragments: number;
+  uncommon_fragments: number;
+  rare_fragments: number;
+  epic_fragments: number;
+  legendary_fragments: number;
+};
+
+export async function adminGetPlayerWallet(userId: string): Promise<AdminPlayerWallet | null> {
+  const { data, error } = await (supabase as any).rpc("admin_tcg_player_wallet", { _user_id: userId });
+  if (error) throw error;
+  const row = Array.isArray(data) ? data[0] : data;
+  return (row ?? null) as AdminPlayerWallet | null;
+}
+
+export type AdminPlayerAchievement = {
+  achievement_id: string;
+  progress: number;
+  completed: boolean;
+  reward_claimed: boolean;
+};
+
+export async function adminListPlayerAchievements(userId: string): Promise<AdminPlayerAchievement[]> {
+  const { data, error } = await (supabase as any).rpc("admin_tcg_player_achievements", { _user_id: userId });
+  if (error) throw error;
+  return (data ?? []) as AdminPlayerAchievement[];
+}
+
+
 export async function adminSaveCard(card: Partial<TcgCard> & { name: string }) {
   const payload = {
     name: card.name,

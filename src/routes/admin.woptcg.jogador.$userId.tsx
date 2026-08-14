@@ -2,9 +2,11 @@ import { createFileRoute, Link, useParams } from "@tanstack/react-router";
 import { AdminLink } from "@/lib/admin/base";
 import { useQuery } from "@tanstack/react-query";
 import { useMemo } from "react";
-import { ArrowLeft, Layers, BookOpen, Star, Trophy, Skull, Lock } from "lucide-react";
+import { ArrowLeft, Layers, BookOpen, Star, Trophy, Skull, Lock, Gem, FlaskConical, Award } from "lucide-react";
 import {
   adminGetTcgPlayer,
+  adminGetPlayerWallet,
+  adminListPlayerAchievements,
   adminListPlayerCards,
   listCards,
   RARITIES,
@@ -14,8 +16,10 @@ import {
   type Rarity,
   type TcgCard,
 } from "@/lib/tcg/api";
+import { listAchievements, CATEGORY_LABEL, type AchievementCategory } from "@/lib/tcg/achievements";
 import { CardCost } from "@/components/tcg/card-cost";
 import { Skeleton } from "@/components/ui/skeleton";
+
 
 export const Route = createFileRoute("/admin/woptcg/jogador/$userId")({
   component: PlayerProfileAdmin,
@@ -63,6 +67,15 @@ export function PlayerProfileAdmin() {
     queryKey: ["admin-tcg-player-cards", userId],
     queryFn: () => adminListPlayerCards(userId),
   });
+  const { data: wallet } = useQuery({
+    queryKey: ["admin-tcg-player-wallet", userId],
+    queryFn: () => adminGetPlayerWallet(userId),
+  });
+  const { data: achievements } = useQuery({ queryKey: ["tcg-achievements"], queryFn: listAchievements });
+  const { data: playerAch } = useQuery({
+    queryKey: ["admin-tcg-player-achievements", userId],
+    queryFn: () => adminListPlayerAchievements(userId),
+  });
 
   const qty = useMemo(() => {
     const m = new Map<string, number>();
@@ -70,10 +83,38 @@ export function PlayerProfileAdmin() {
     return m;
   }, [owned]);
 
+  const achMap = useMemo(() => {
+    const m = new Map<string, { progress: number; completed: boolean; reward_claimed: boolean }>();
+    (playerAch ?? []).forEach((r) =>
+      m.set(r.achievement_id, {
+        progress: r.progress ?? 0,
+        completed: !!r.completed,
+        reward_claimed: !!r.reward_claimed,
+      }),
+    );
+    return m;
+  }, [playerAch]);
+
+  const achList = achievements ?? [];
+  const achDone = achList.filter((a) => achMap.get(a.id)?.completed).length;
+  const achPct = achList.length ? Math.round((achDone / achList.length) * 100) : 0;
+
+  const fragments = wallet
+    ? [
+        { label: "Comum", value: wallet.common_fragments },
+        { label: "Incomum", value: wallet.uncommon_fragments },
+        { label: "Rara", value: wallet.rare_fragments },
+        { label: "Épica", value: wallet.epic_fragments },
+        { label: "Lendária", value: wallet.legendary_fragments },
+      ]
+    : [];
+  const totalFragments = fragments.reduce((a, f) => a + (f.value ?? 0), 0);
+
   const level = player?.level ?? 1;
   const xp = player?.xp ?? 0;
   const xpNeeded = xpToNextLevel(level);
   const pct = Math.min(100, Math.round((xp / xpNeeded) * 100));
+
 
   return (
     <div>
@@ -100,7 +141,46 @@ export function PlayerProfileAdmin() {
             <Stat icon={BookOpen} label="Cartas existentes" value={String((cards ?? []).length)} hint="No catálogo" />
             <Stat icon={Trophy} label="Vitórias" value={String(player.wins ?? 0)} hint="Duelos" />
             <Stat icon={Skull} label="Derrotas" value={String(player.losses ?? 0)} hint="Duelos" accent="text-wop-red" />
+            <Stat
+              icon={FlaskConical}
+              label="Essência"
+              value={String(wallet?.essence ?? 0)}
+              hint="Moeda do mercado"
+              accent="text-fuchsia-400"
+            />
+            <Stat
+              icon={Gem}
+              label="Fragmentos"
+              value={String(totalFragments)}
+              hint="Total de todas as raridades"
+              accent="text-sky-400"
+            />
+            <Stat
+              icon={Award}
+              label="Conquistas"
+              value={`${achDone} / ${achList.length}`}
+              hint={`${achPct}% concluído`}
+            />
           </div>
+
+          {/* Fragmentos por raridade */}
+          <div className="mt-6 rounded-2xl border border-gold/20 bg-sea-surface/40 p-6">
+            <p className="text-[11px] tracking-[0.3em] uppercase text-gold/70 mb-4">Fragmentos por raridade</p>
+            <div className="flex flex-wrap gap-2">
+              {fragments.map((f) => (
+                <span
+                  key={f.label}
+                  className="flex items-center gap-1.5 rounded-lg border border-sky-400/25 bg-sky-500/10 px-3 py-1.5 text-[11px] tracking-wider uppercase text-sky-200"
+                >
+                  <Gem className="size-3.5" /> {f.label}: {f.value ?? 0}
+                </span>
+              ))}
+              {fragments.length === 0 && (
+                <span className="text-xs text-parchment/50">Carteira sem dados.</span>
+              )}
+            </div>
+          </div>
+
 
           <div className="mt-6 rounded-2xl border border-gold/20 bg-sea-surface/40 p-6">
             <div className="flex items-center justify-between mb-3">
@@ -116,6 +196,61 @@ export function PlayerProfileAdmin() {
               />
             </div>
           </div>
+
+          {/* Conquistas */}
+          <div className="mt-6 rounded-2xl border border-gold/20 bg-sea-surface/40 p-6">
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-[11px] tracking-[0.3em] uppercase text-gold/70">Progressão de conquistas</p>
+              <p className="text-xs text-parchment/60">
+                {achDone} / {achList.length} concluídas · {achPct}%
+              </p>
+            </div>
+            <div className="h-3 rounded-full bg-sea-deep/70 border border-gold/15 overflow-hidden mb-5">
+              <div
+                className="h-full bg-gradient-primary transition-all duration-700"
+                style={{ width: `${Math.max(2, achPct)}%` }}
+              />
+            </div>
+
+            {achList.length === 0 ? (
+              <p className="text-xs text-parchment/50">Nenhuma conquista cadastrada.</p>
+            ) : (
+              <div className="grid gap-2 sm:grid-cols-2">
+                {achList.map((a) => {
+                  const st = achMap.get(a.id);
+                  const prog = Math.min(a.target_value, st?.progress ?? 0);
+                  const p = a.target_value ? Math.round((prog / a.target_value) * 100) : 0;
+                  return (
+                    <div
+                      key={a.id}
+                      className={`rounded-xl border p-3 ${
+                        st?.completed ? "border-gold/40 bg-gold/5" : "border-gold/12 bg-sea-deep/40"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <p className="text-sm truncate">{a.title}</p>
+                        <span className="text-[10px] tracking-widest uppercase text-parchment/50 shrink-0">
+                          {CATEGORY_LABEL[a.category as AchievementCategory] ?? a.category}
+                        </span>
+                      </div>
+                      <div className="mt-2 h-1.5 rounded-full bg-sea-deep/80 border border-gold/10 overflow-hidden">
+                        <div
+                          className={`h-full ${st?.completed ? "bg-gold" : "bg-parchment/40"}`}
+                          style={{ width: `${p}%` }}
+                        />
+                      </div>
+                      <p className="mt-1.5 text-[10px] tracking-wider uppercase text-parchment/45">
+                        {prog} / {a.target_value}
+                        {st?.completed ? (st.reward_claimed ? " · resgatada" : " · concluída") : ""}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+
 
           {/* Cartas */}
           <p className="text-[11px] tracking-[0.3em] uppercase text-gold/70 mt-8 mb-4">Cartas</p>

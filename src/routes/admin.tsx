@@ -2,6 +2,8 @@ import { createFileRoute, Outlet, redirect, Link, useRouterState } from "@tansta
 import { supabase } from "@/lib/supabase";
 import { ArrowLeft, Users, Package, Inbox, Ghost, Anchor, Layers, ShieldAlert } from "lucide-react";
 import { AdminBaseProvider, AdminLink, type AdminBase } from "@/lib/admin/base";
+import { ResetAllTcgButton } from "@/components/admin/reset-all-tcg";
+
 
 export async function requireAdmin() {
   const { data: sess } = await supabase.auth.getSession();
@@ -36,10 +38,14 @@ export function AdminLayout({ base }: { base: AdminBase }) {
     <AdminBaseProvider value={base}>
       <div className="min-h-screen bg-sea-deep text-parchment">
         {isDev && (
-          <div className="bg-wop-red/15 border-b border-wop-red/40 text-wop-red text-[10px] tracking-[0.3em] uppercase px-4 lg:px-8 py-1.5 flex items-center gap-2">
-            <ShieldAlert className="size-3.5" /> Sessão de desenvolvedor · /admindev
+          <div className="bg-wop-red/15 border-b border-wop-red/40 text-wop-red text-[10px] tracking-[0.3em] uppercase px-4 lg:px-8 py-1.5 flex items-center justify-between gap-2">
+            <span className="flex items-center gap-2">
+              <ShieldAlert className="size-3.5" /> Sessão de desenvolvedor · /admindev
+            </span>
+            <ResetAllTcgButton />
           </div>
         )}
+
         <header
           className={`h-16 border-b bg-sea-deep/95 backdrop-blur flex items-center justify-between px-4 lg:px-8 ${
             isDev ? "border-wop-red/40" : "border-gold/20"

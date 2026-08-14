@@ -51,6 +51,8 @@ function DecksPage() {
   // Filtros da coleção
   const [q, setQ] = useState("");
   const [rarityFilter, setRarityFilter] = useState<"ALL" | Rarity>("ALL");
+  const [costFilter, setCostFilter] = useState<"ALL" | number>("ALL");
+
 
   const { data: cards, isLoading: loadingCards } = useQuery({ 
     queryKey: ["tcg-cards", "ACTIVE"], 
@@ -204,10 +206,20 @@ function DecksPage() {
   };
 
   const filteredCollection = (cards ?? []).filter(c => {
-      if (q && !c.name.toLowerCase().includes(q.toLowerCase())) return false;
+      const cost = c.cost ?? 0;
+      if (q) {
+          const s = q.trim().toLowerCase();
+          const byName = c.name.toLowerCase().includes(s);
+          // busca também por custo: "3", "custo 3", "custo: 3"
+          const costTerm = s.replace(/^custo\s*:?\s*/, "");
+          const byCost = /^\d+$/.test(costTerm) && cost === Number(costTerm);
+          if (!byName && !byCost) return false;
+      }
       if (rarityFilter !== "ALL" && c.rarity !== rarityFilter) return false;
+      if (costFilter !== "ALL" && cost !== costFilter) return false;
       return true;
   });
+
 
   if (loadingDecks || loadingCards) {
     return <div className="p-10"><Skeleton className="h-40 w-full bg-sea-surface/40" /></div>;
@@ -347,7 +359,7 @@ function DecksPage() {
                                 <input 
                                     value={q}
                                     onChange={(e) => setQ(e.target.value)}
-                                    placeholder="Buscar..."
+                                    placeholder="Buscar por nome ou custo..."
                                     className="w-full bg-sea-surface/60 border border-gold/15 pl-8 pr-3 py-1.5 text-xs rounded-lg focus:outline-none focus:border-gold"
                                 />
                             </div>
@@ -359,6 +371,17 @@ function DecksPage() {
                                 <option value="ALL">Todas</option>
                                 {RARITIES.map(r => <option key={r} value={r}>{RARITY_LABEL[r]}</option>)}
                             </select>
+                            <select
+                                value={String(costFilter)}
+                                onChange={(e) => setCostFilter(e.target.value === "ALL" ? "ALL" : Number(e.target.value))}
+                                className="bg-sea-surface/60 border border-gold/15 px-3 py-1.5 text-xs rounded-lg focus:outline-none text-parchment/70"
+                            >
+                                <option value="ALL">Todos os custos</option>
+                                {Array.from({ length: 11 }, (_, i) => i).map(n => (
+                                    <option key={n} value={n}>Custo {n}</option>
+                                ))}
+                            </select>
+
                         </div>
                     </div>
 

@@ -158,8 +158,9 @@ function CraftPage() {
   const dismantleCandidates = ownedCards.filter((c) => {
     const qty = ownedMap.get(c.id) ?? 0;
     const avail = qty - (reserved.get(c.id) ?? 0);
-    return qty >= 2 && avail >= 1;
+    return qty >= 1 && avail >= 1;
   });
+
 
   /* ---- EXTRACT ---- */
   const extractMut = useMutation({
@@ -175,8 +176,9 @@ function CraftPage() {
   const extractCandidates = ownedCards.filter((c) => {
     const qty = ownedMap.get(c.id) ?? 0;
     const avail = qty - (reserved.get(c.id) ?? 0);
-    return qty >= 2 && avail >= 1;
+    return qty >= 1 && avail >= 1;
   });
+
 
   const TABS: { id: CraftTab; label: string; icon: typeof Hammer; desc: string; accent: string }[] = [
     {
@@ -331,8 +333,10 @@ function CraftPage() {
       {tab === "dismantle" && (
         <div className="rounded-2xl border border-gold/20 bg-sea-surface/40 p-6">
           <p className="text-xs text-parchment/60 mb-4">
-            Apenas cartas com 2+ cópias e fora de baralhos aparecem aqui. Desmantelar concede 1 fragmento da raridade.
+            Qualquer carta fora de baralhos pode ser desmantelada, mesmo com apenas 1 cópia. Desmantelar concede 1
+            fragmento da raridade.
           </p>
+
           {dismantleCandidates.length === 0 ? (
             <EmptyState icon={Recycle} text="Nenhuma carta excedente disponível para desmantelar." />
           ) : (
@@ -350,9 +354,10 @@ function CraftPage() {
                           <div className="grid size-full place-items-center text-[11px] uppercase text-parchment/30">Sem imagem</div>
                         )}
                         <CardCost cost={c.cost ?? 0} />
-                        <span className="absolute top-2 right-2 px-2 py-1 rounded-full text-[9px] tracking-widest uppercase backdrop-blur bg-gold/20 text-gold border border-gold/40">
+                        <span className="absolute top-11 right-2 z-10 px-2 py-0.5 rounded-full text-[9px] tracking-widest uppercase backdrop-blur bg-gold/20 text-gold border border-gold/40">
                           x{qty}
                         </span>
+
                       </div>
                       <div className="p-3 border-t border-gold/10">
                         <p className="text-sm truncate">{c.name}</p>
@@ -408,9 +413,10 @@ function CraftPage() {
                           <div className="grid size-full place-items-center text-[11px] uppercase text-parchment/30">Sem imagem</div>
                         )}
                         <CardCost cost={c.cost ?? 0} />
-                        <span className="absolute top-2 right-2 px-2 py-1 rounded-full text-[9px] bg-black/60 text-parchment border border-gold/30">
+                        <span className="absolute top-11 right-2 z-10 px-2 py-0.5 rounded-full text-[9px] tracking-widest uppercase backdrop-blur bg-gold/20 text-gold border border-gold/40">
                           x{qty}
                         </span>
+
                       </div>
                       <div className="p-3 border-t border-gold/10">
                         <p className="text-sm truncate">{c.name}</p>
