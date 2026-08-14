@@ -197,6 +197,61 @@ export function PlayerProfileAdmin() {
             </div>
           </div>
 
+          {/* Conquistas */}
+          <div className="mt-6 rounded-2xl border border-gold/20 bg-sea-surface/40 p-6">
+            <div className="flex items-center justify-between mb-3">
+              <p className="text-[11px] tracking-[0.3em] uppercase text-gold/70">Progressão de conquistas</p>
+              <p className="text-xs text-parchment/60">
+                {achDone} / {achList.length} concluídas · {achPct}%
+              </p>
+            </div>
+            <div className="h-3 rounded-full bg-sea-deep/70 border border-gold/15 overflow-hidden mb-5">
+              <div
+                className="h-full bg-gradient-primary transition-all duration-700"
+                style={{ width: `${Math.max(2, achPct)}%` }}
+              />
+            </div>
+
+            {achList.length === 0 ? (
+              <p className="text-xs text-parchment/50">Nenhuma conquista cadastrada.</p>
+            ) : (
+              <div className="grid gap-2 sm:grid-cols-2">
+                {achList.map((a) => {
+                  const st = achMap.get(a.id);
+                  const prog = Math.min(a.target_value, st?.progress ?? 0);
+                  const p = a.target_value ? Math.round((prog / a.target_value) * 100) : 0;
+                  return (
+                    <div
+                      key={a.id}
+                      className={`rounded-xl border p-3 ${
+                        st?.completed ? "border-gold/40 bg-gold/5" : "border-gold/12 bg-sea-deep/40"
+                      }`}
+                    >
+                      <div className="flex items-center justify-between gap-2">
+                        <p className="text-sm truncate">{a.title}</p>
+                        <span className="text-[10px] tracking-widest uppercase text-parchment/50 shrink-0">
+                          {CATEGORY_LABEL[a.category as AchievementCategory] ?? a.category}
+                        </span>
+                      </div>
+                      <div className="mt-2 h-1.5 rounded-full bg-sea-deep/80 border border-gold/10 overflow-hidden">
+                        <div
+                          className={`h-full ${st?.completed ? "bg-gold" : "bg-parchment/40"}`}
+                          style={{ width: `${p}%` }}
+                        />
+                      </div>
+                      <p className="mt-1.5 text-[10px] tracking-wider uppercase text-parchment/45">
+                        {prog} / {a.target_value}
+                        {st?.completed ? (st.reward_claimed ? " · resgatada" : " · concluída") : ""}
+                      </p>
+                    </div>
+                  );
+                })}
+              </div>
+            )}
+          </div>
+
+
+
           {/* Cartas */}
           <p className="text-[11px] tracking-[0.3em] uppercase text-gold/70 mt-8 mb-4">Cartas</p>
           <div className="grid gap-4 grid-cols-2 sm:grid-cols-3 lg:grid-cols-5">
