@@ -14,6 +14,7 @@ import {
   listMyDecks,
   listDuelHistory,
   getAiBannerUrl,
+  getPlayerCosmetics,
   type TcgCard,
 } from "@/lib/tcg/api";
 import { finishMatch, type DuelReward } from "@/lib/tcg/rank";
@@ -96,6 +97,13 @@ function DuelsPage() {
   const { view: pvpView, refresh: refreshPvp } = usePvpMatch(pvpMatchId);
   const startedRef = useRef<string | null>(null);
   const pvpRewardedRef = useRef<string | null>(null);
+  const opponentId = pvpView?.opponent_id ?? null;
+  const { data: foeProfile } = useQuery({
+    queryKey: ["tcg-player-cosmetics", opponentId],
+    queryFn: () => getPlayerCosmetics(opponentId!),
+    enabled: !!opponentId,
+    staleTime: 60_000,
+  });
 
   const cardsMap = useMemo(() => {
     const m = new Map<string, TcgCard>();
@@ -390,8 +398,8 @@ function DuelsPage() {
         game={pvpView.state}
         myAvatarUrl={myAvatar}
         myBannerUrl={myBanner}
-        foeAvatarUrl={FOE_AVATAR_URL}
-        foeBannerUrl={aiBanner ?? null}
+        foeAvatarUrl={foeProfile?.avatar_url ?? FOE_AVATAR_URL}
+        foeBannerUrl={foeProfile?.banner_url ?? null}
         canAct={pvpView.is_my_turn && !finished}
         onPlay={(uid, slot) => void doPvpAction({ type: "PLAY", uid, slot })}
         onAttack={(uid, target) => void doPvpAction({ type: "ATTACK", uid, target })}
