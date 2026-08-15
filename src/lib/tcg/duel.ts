@@ -150,6 +150,7 @@ function newSide(name: string, pool: TcgCard[], exact?: TcgCard[]): Side {
 
 export function createDuel(pool: TcgCard[], playerName = "Você", playerDeck?: TcgCard[]): DuelState {
   const s: DuelState = {
+    state_version: ENGINE_STATE_VERSION,
     you: newSide(playerName, pool, playerDeck),
     foe: newSide("Adversário", pool),
     turn: "you",
@@ -159,6 +160,7 @@ export function createDuel(pool: TcgCard[], playerName = "Você", playerDeck?: T
     winner: null,
     fx: { target: null, kind: null, stamp: 0 },
   };
+
   pushLog(s, "system", `O duelo começou! Você tem ${START_HP} HP e 1 PA.`);
   return s;
 }
