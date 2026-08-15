@@ -174,6 +174,8 @@ export async function finishMatch(params: {
   turns: number;
   winnerName: string;
   loserName: string;
+  /** Duelos contra a IA (false) não alteram o VR; JxJ (padrão) sim. */
+  ranked?: boolean;
 }): Promise<DuelReward[]> {
   const { data, error } = await sb.rpc("tcg_finish_match", {
     _winner_id: params.winnerId,
@@ -181,6 +183,7 @@ export async function finishMatch(params: {
     _turns: Math.max(0, params.turns),
     _winner_name: params.winnerName,
     _loser_name: params.loserName,
+    _ranked: params.ranked ?? true,
   });
   if (error) throw error;
   return ((data ?? []) as any[]).map((r) => ({

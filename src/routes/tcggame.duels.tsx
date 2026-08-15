@@ -179,6 +179,7 @@ function DuelsPage() {
         turns: live.game.turnCount,
         winnerName: live.game.foe.name,
         loserName: live.game.you.name,
+        ranked: false,
       }).catch(() => undefined);
     };
     const onUnload = () => abandon();
@@ -200,6 +201,7 @@ function DuelsPage() {
       turns,
       winnerName: youWon ? game.you.name : game.foe.name,
       loserName: youWon ? game.foe.name : game.you.name,
+      ranked: false,
     })
       .then(async (rows) => {
         const mine = rows.find((r) => r.user_id === user.id) ?? null;
