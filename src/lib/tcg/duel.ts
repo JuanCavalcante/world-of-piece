@@ -165,6 +165,30 @@ export function createDuel(pool: TcgCard[], playerName = "Você", playerDeck?: T
   return s;
 }
 
+/** Duelo entre dois jogadores humanos: cada lado usa exatamente o seu baralho. */
+export function createPvpDuel(
+  p1Name: string,
+  p1Deck: TcgCard[],
+  p2Name: string,
+  p2Deck: TcgCard[],
+): DuelState {
+  const s: DuelState = {
+    state_version: ENGINE_STATE_VERSION,
+    you: newSide(p1Name, p1Deck, p1Deck),
+    foe: newSide(p2Name, p2Deck, p2Deck),
+    turn: "you",
+    turnCount: 1,
+    log: [],
+    over: false,
+    winner: null,
+    fx: { target: null, kind: null, stamp: 0 },
+  };
+  pushLog(s, "system", `O duelo começou! ${p1Name} joga primeiro.`);
+  return s;
+}
+
+
+
 
 export const other = (k: SideKey): SideKey => (k === "you" ? "foe" : "you");
 
