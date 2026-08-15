@@ -214,8 +214,8 @@ BEGIN
   -- Congela o baralho escolhido: [{card_id, quantity}, ...]
   SELECT COALESCE(jsonb_agg(jsonb_build_object('card_id', dc.card_id, 'quantity', dc.quantity)), '[]'::jsonb)
     INTO snap
-    FROM public.tcg_deck_cards dc
-    JOIN public.tcg_decks d ON d.id = dc.deck_id
+    FROM public.deck_cards dc
+    JOIN public.decks d ON d.id = dc.deck_id
    WHERE d.id = _deck_id AND d.user_id = me;
 
   IF snap IS NULL OR jsonb_array_length(snap) = 0 THEN
