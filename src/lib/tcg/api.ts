@@ -441,3 +441,23 @@ export async function setMyBanner(bannerUrl: string | null) {
     .eq("user_id", userId);
   if (error) throw error;
 }
+
+/* ---------- perfil público (cosméticos usados no duelo JxJ) ---------- */
+
+export type TcgPublicCosmetics = {
+  user_id: string;
+  username: string | null;
+  avatar_url: string | null;
+  banner_url: string | null;
+};
+
+/** Lê avatar/banner públicos de um jogador (usado para exibir o oponente no duelo). */
+export async function getPlayerCosmetics(userId: string): Promise<TcgPublicCosmetics | null> {
+  const { data, error } = await supabase
+    .from("tcg_players")
+    .select("user_id, username, avatar_url, banner_url")
+    .eq("user_id", userId)
+    .maybeSingle();
+  if (error) throw error;
+  return (data as unknown as TcgPublicCosmetics) ?? null;
+}
