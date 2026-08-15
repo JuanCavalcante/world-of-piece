@@ -56,6 +56,9 @@ export type Side = {
   hand: InPlayCard[];
   field: (InPlayCard | null)[];
   attacksUsed: number;
+  /** Preenchido apenas em estados redigidos (PvP): contagem sem revelar as cartas. */
+  handCount?: number;
+  deckCount?: number;
 };
 
 export type LogEntry = { id: number; side: SideKey | "system"; text: string };
@@ -63,6 +66,8 @@ export type LogEntry = { id: number; side: SideKey | "system"; text: string };
 export type AttackTarget = { kind: "player" } | { kind: "card"; slot: number };
 
 export type DuelState = {
+  /** Versão do formato serializado do estado (usado no PvP persistido). */
+  state_version?: number;
   you: Side;
   foe: Side;
   turn: SideKey;
@@ -73,18 +78,21 @@ export type DuelState = {
   fx: { target: SideKey | null; kind: "hit" | "attack" | null; stamp: number };
 };
 
+/** Formato atual do DuelState serializado. Incrementar ao mudar a forma do estado. */
+export const ENGINE_STATE_VERSION = 1;
+
 const MAX_AP = 10;
 export const START_HP = 30;
 const START_HAND = 4;
 
-let uidSeq = 0;
-const uid = () => `c${++uidSeq}_${Math.random().toString(36).slice(2, 7)}`;
+const uid = () =>
+  `c${Math.random().toString(36).slice(2, 9)}${Math.random().toString(36).slice(2, 6)}`;
 
-let logSeq = 0;
 export function pushLog(s: DuelState, side: SideKey | "system", text: string) {
-  logSeq += 1;
-  s.log = [...s.log, { id: logSeq, side, text }].slice(-80);
+  const lastId = s.log.length ? s.log[s.log.length - 1].id : 0;
+  s.log = [...s.log, { id: lastId + 1, side, text }].slice(-80);
 }
+
 
 function toInPlay(c: TcgCard): InPlayCard {
   const anyCard = c as TcgCard & { atk?: number; effect_code?: string; effect?: string | null };
@@ -142,6 +150,7 @@ function newSide(name: string, pool: TcgCard[], exact?: TcgCard[]): Side {
 
 export function createDuel(pool: TcgCard[], playerName = "Você", playerDeck?: TcgCard[]): DuelState {
   const s: DuelState = {
+    state_version: ENGINE_STATE_VERSION,
     you: newSide(playerName, pool, playerDeck),
     foe: newSide("Adversário", pool),
     turn: "you",
@@ -151,9 +160,34 @@ export function createDuel(pool: TcgCard[], playerName = "Você", playerDeck?: T
     winner: null,
     fx: { target: null, kind: null, stamp: 0 },
   };
+
   pushLog(s, "system", `O duelo começou! Você tem ${START_HP} HP e 1 PA.`);
   return s;
 }
+
+/** Duelo entre dois jogadores humanos: cada lado usa exatamente o seu baralho. */
+export function createPvpDuel(
+  p1Name: string,
+  p1Deck: TcgCard[],
+  p2Name: string,
+  p2Deck: TcgCard[],
+): DuelState {
+  const s: DuelState = {
+    state_version: ENGINE_STATE_VERSION,
+    you: newSide(p1Name, p1Deck, p1Deck),
+    foe: newSide(p2Name, p2Deck, p2Deck),
+    turn: "you",
+    turnCount: 1,
+    log: [],
+    over: false,
+    winner: null,
+    fx: { target: null, kind: null, stamp: 0 },
+  };
+  pushLog(s, "system", `O duelo começou! ${p1Name} joga primeiro.`);
+  return s;
+}
+
+
 
 
 export const other = (k: SideKey): SideKey => (k === "you" ? "foe" : "you");
