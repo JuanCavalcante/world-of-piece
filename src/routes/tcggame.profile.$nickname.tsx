@@ -178,6 +178,8 @@ function ProfileView({ profile, rate }: { profile: NonNullable<Awaited<ReturnTyp
         </div>
       </div>
 
+      <PvpHistory userId={profile.user_id} />
+
       <Link
         to="/tcggame/rank"
         className="mt-8 inline-flex items-center gap-2 rounded-xl border border-gold/30 px-5 py-2.5 text-[11px] uppercase tracking-widest text-gold hover:bg-gold/10"
