@@ -178,8 +178,8 @@ function SignupPage() {
 
             <button
               type="submit"
-              disabled={loading}
-              className="w-full py-3 bg-gold text-sea-deep font-bold tracking-widest text-sm hover:bg-parchment transition-colors rounded-sm disabled:opacity-50"
+              disabled={loading || !accepted}
+              className="w-full py-3 bg-gold text-sea-deep font-bold tracking-widest text-sm hover:bg-parchment transition-colors rounded-sm disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? "CRIANDO..." : "CRIAR CONTA"}
             </button>
