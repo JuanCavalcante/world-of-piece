@@ -205,3 +205,28 @@ export async function finishMatch(params: {
     best_win_streak: Number(r.out_best_win_streak ?? 0),
   }));
 }
+
+/* ---------- histórico JxJ (perfil público) ---------- */
+
+export type PvpHistoryRow = {
+  match_id: string;
+  opponent_id: string;
+  opponent_name: string;
+  won: boolean;
+  turns: number;
+  created_at: string;
+};
+
+/** Histórico de duelos Jogador vs Jogador de um duelista. */
+export async function listPvpHistory(userId: string, limit = 20): Promise<PvpHistoryRow[]> {
+  const { data, error } = await sb.rpc("tcg_pvp_history", { _user_id: userId, _limit: limit });
+  if (error) throw error;
+  return ((data ?? []) as any[]).map((r) => ({
+    match_id: r.out_match_id,
+    opponent_id: r.out_opponent_id,
+    opponent_name: r.out_opponent_name || "Jogador",
+    won: !!r.out_won,
+    turns: Number(r.out_turns ?? 0),
+    created_at: r.out_created_at,
+  }));
+}

@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { UserRound, Trophy, Medal, Layers, Star, Flame, Swords, BookOpen, ArrowLeft } from "lucide-react";
 import { TcgPageHeader } from "@/components/tcg/tcg-shell";
 import { xpToNextLevel } from "@/lib/tcg/api";
-import { getPublicProfile, winRatePct } from "@/lib/tcg/rank";
+import { getPublicProfile, listPvpHistory, winRatePct } from "@/lib/tcg/rank";
 
 export const Route = createFileRoute("/tcggame/profile/$nickname")({
   head: () => ({
@@ -63,6 +63,68 @@ function PublicProfilePage() {
 
   const rate = winRatePct(profile.wins, profile.losses);
 
+  return <ProfileView profile={profile} rate={rate} />;
+}
+
+function PvpHistory({ userId }: { userId: string }) {
+  const { data, isLoading } = useQuery({
+    queryKey: ["tcg-pvp-history", userId],
+    queryFn: () => listPvpHistory(userId, 20),
+  });
+
+  return (
+    <section className="mt-8 rounded-3xl border border-gold/20 bg-sea-surface/40 p-6">
+      <div className="mb-4 flex items-center gap-2">
+        <Swords className="size-4 text-gold" />
+        <h2 className="text-[11px] uppercase tracking-[0.2em] text-parchment/60">Histórico de duelos JxJ</h2>
+      </div>
+
+      {isLoading ? (
+        <p className="py-6 text-center text-xs uppercase tracking-widest text-parchment/40">Carregando duelos...</p>
+      ) : !data?.length ? (
+        <p className="py-6 text-center text-xs uppercase tracking-widest text-parchment/40">
+          Nenhum duelo Jogador vs Jogador registrado.
+        </p>
+      ) : (
+        <ul className="divide-y divide-gold/10">
+          {data.map((m) => (
+            <li key={m.match_id} className="flex items-center justify-between gap-3 py-3">
+              <div className="flex min-w-0 items-center gap-3">
+                <span
+                  className={`rounded-md px-2 py-1 text-[10px] font-semibold uppercase tracking-widest ${
+                    m.won
+                      ? "bg-emerald-500/15 text-emerald-300"
+                      : "bg-rose-500/15 text-rose-300"
+                  }`}
+                >
+                  {m.won ? "Vitória" : "Derrota"}
+                </span>
+                <div className="min-w-0">
+                  <Link
+                    to="/tcggame/profile/$nickname"
+                    params={{ nickname: encodeURIComponent(m.opponent_name) }}
+                    className="block truncate text-sm text-parchment hover:text-gold"
+                  >
+                    vs {m.opponent_name}
+                  </Link>
+                  <p className="text-[10px] uppercase tracking-widest text-parchment/40">
+                    {m.turns} turnos
+                  </p>
+                </div>
+              </div>
+              <span className="shrink-0 text-[10px] uppercase tracking-widest text-parchment/40">
+                {new Date(m.created_at).toLocaleDateString("pt-BR")}
+              </span>
+            </li>
+          ))}
+        </ul>
+      )}
+    </section>
+  );
+}
+
+function ProfileView({ profile, rate }: { profile: NonNullable<Awaited<ReturnType<typeof getPublicProfile>>>; rate: number }) {
+
   return (
     <div>
       <TcgPageHeader eyebrow="Perfil público" title={profile.username} description="Estatísticas competitivas deste duelista." />
@@ -115,6 +177,8 @@ function PublicProfilePage() {
           />
         </div>
       </div>
+
+      <PvpHistory userId={profile.user_id} />
 
       <Link
         to="/tcggame/rank"
