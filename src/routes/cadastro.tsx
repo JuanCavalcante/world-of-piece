@@ -14,6 +14,7 @@ function SignupPage() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [accepted, setAccepted] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -23,6 +24,10 @@ function SignupPage() {
     setError(null);
     setSuccess(null);
 
+    if (!accepted) {
+      setError("Você precisa aceitar os Termos de Serviço para continuar.");
+      return;
+    }
     if (password.length < 6) {
       setError("A senha deve ter pelo menos 6 caracteres.");
       return;
@@ -130,6 +135,36 @@ function SignupPage() {
               />
             </div>
 
+            <label className="flex items-start gap-3 text-xs text-parchment/70 leading-relaxed cursor-pointer">
+              <input
+                type="checkbox"
+                checked={accepted}
+                onChange={(e) => setAccepted(e.target.checked)}
+                className="mt-0.5 size-4 shrink-0 accent-gold"
+              />
+              <span>
+                Li e concordo com os{" "}
+                <a
+                  href="https://rentry.org/termoswop"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gold hover:underline"
+                >
+                  Termos de Serviço
+                </a>{" "}
+                e declaro estar ciente da{" "}
+                <a
+                  href="https://rentry.org/privacidadewop"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gold hover:underline"
+                >
+                  Política de Privacidade
+                </a>
+                .
+              </span>
+            </label>
+
             {error && (
               <p className="text-xs text-red-400 border border-red-500/20 bg-red-500/10 p-3 rounded-sm">
                 {error}
@@ -143,8 +178,8 @@ function SignupPage() {
 
             <button
               type="submit"
-              disabled={loading}
-              className="w-full py-3 bg-gold text-sea-deep font-bold tracking-widest text-sm hover:bg-parchment transition-colors rounded-sm disabled:opacity-50"
+              disabled={loading || !accepted}
+              className="w-full py-3 bg-gold text-sea-deep font-bold tracking-widest text-sm hover:bg-parchment transition-colors rounded-sm disabled:opacity-50 disabled:cursor-not-allowed"
             >
               {loading ? "CRIANDO..." : "CRIAR CONTA"}
             </button>
