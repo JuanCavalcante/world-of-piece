@@ -169,7 +169,7 @@ export async function searchPlayers(q: string, limit = 5): Promise<PlayerSuggest
   if (error) throw error;
   return ((data ?? []) as any[]).map((r) => ({
     user_id: r.out_user_id,
-    username: r.out_username ?? "Jogador",
+    username: displayName(r),
     avatar_url: r.out_avatar_url ?? null,
     level: Number(r.out_level ?? 1),
   }));
