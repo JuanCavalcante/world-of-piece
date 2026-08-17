@@ -301,7 +301,7 @@ function CardsPage() {
                     </div>
                 </div>
                 <p className="text-[10px] tracking-widest uppercase text-parchment/50 mb-2">Efeito</p>
-                <p className="text-sm text-parchment/80">{selected.effect || "Sem efeito registrado."}</p>
+                <p className="text-sm text-parchment/60">Em desenvolvimento — efeitos desativados nesta versão beta.</p>
               </div>
             </div>
           )}
