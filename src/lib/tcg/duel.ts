@@ -96,7 +96,7 @@ export function pushLog(s: DuelState, side: SideKey | "system", text: string) {
 
 function toInPlay(c: TcgCard): InPlayCard {
   const anyCard = c as TcgCard & { atk?: number; effect_code?: string; effect?: string | null };
-  const ps = Math.max(10, Number(c.power) || 50);
+  const ps = Math.max(1, Math.round(Number(c.power)) || 1);
   // Beta: efeitos de carta estão desativados — todas entram em campo sem efeito.
   const code = "NONE" as EffectCode;
   void anyCard.effect_code;
@@ -107,7 +107,7 @@ function toInPlay(c: TcgCard): InPlayCard {
     image_url: c.image_url,
     rarity: c.rarity,
     cost: Math.max(0, Math.min(10, Number(c.cost) || 0)),
-    atk: Math.max(1, Number(anyCard.atk ?? 10)),
+    atk: Math.max(1, Math.round(Number(anyCard.atk)) || 1),
     ps,
     maxPs: ps,
     effect_code: EFFECT_CODES.includes(code) ? code : "NONE",
