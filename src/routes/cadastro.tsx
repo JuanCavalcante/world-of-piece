@@ -135,6 +135,36 @@ function SignupPage() {
               />
             </div>
 
+            <label className="flex items-start gap-3 text-xs text-parchment/70 leading-relaxed cursor-pointer">
+              <input
+                type="checkbox"
+                checked={accepted}
+                onChange={(e) => setAccepted(e.target.checked)}
+                className="mt-0.5 size-4 shrink-0 accent-gold"
+              />
+              <span>
+                Li e concordo com os{" "}
+                <a
+                  href="https://rentry.org/termoswop"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gold hover:underline"
+                >
+                  Termos de Serviço
+                </a>{" "}
+                e declaro estar ciente da{" "}
+                <a
+                  href="https://rentry.org/privacidadewop"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-gold hover:underline"
+                >
+                  Política de Privacidade
+                </a>
+                .
+              </span>
+            </label>
+
             {error && (
               <p className="text-xs text-red-400 border border-red-500/20 bg-red-500/10 p-3 rounded-sm">
                 {error}
