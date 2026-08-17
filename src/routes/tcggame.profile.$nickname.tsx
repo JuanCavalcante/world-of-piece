@@ -3,7 +3,7 @@ import { useQuery } from "@tanstack/react-query";
 import { UserRound, Trophy, Medal, Layers, Star, Flame, Swords, BookOpen, ArrowLeft } from "lucide-react";
 import { TcgPageHeader } from "@/components/tcg/tcg-shell";
 import { xpToNextLevel } from "@/lib/tcg/api";
-import { getPublicProfile, winRatePct } from "@/lib/tcg/rank";
+import { getPublicProfile, listPvpHistory, winRatePct } from "@/lib/tcg/rank";
 
 export const Route = createFileRoute("/tcggame/profile/$nickname")({
   head: () => ({
