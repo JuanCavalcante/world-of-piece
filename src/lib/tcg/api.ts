@@ -228,6 +228,12 @@ export async function adminGivePack(userId: string, size = 5) {
   if (error) throw error;
 }
 
+export async function adminGivePackAll(size = 5): Promise<number> {
+  const { data, error } = await (supabase as any).rpc("admin_tcg_give_pack_all", { _size: size });
+  if (error) throw error;
+  return Number(data ?? 0);
+}
+
 export async function adminResetTcgAccount(userId: string) {
   const { error } = await supabase.rpc("admin_tcg_reset_account", { _user_id: userId });
   if (error) throw error;
