@@ -8,7 +8,6 @@ import {
   canAttack,
   hasGuard,
   isValidTarget,
-  EFFECT_LABEL,
   type AttackTarget,
   type DuelState,
   type InPlayCard,
@@ -285,9 +284,6 @@ export function DuelBoard({
                 <p className="text-[11px] text-gold/80">
                   {zoom.rarity} · {zoom.ps}/{zoom.maxPs} HP · {zoom.atk} ATK · {zoom.cost} MP
                 </p>
-                <p className="text-[11px] text-parchment/60 whitespace-pre-line">
-                  {zoom.effect?.trim() || EFFECT_LABEL[zoom.effect_code]}
-                </p>
                 {selected && <p className="text-[11px] text-wop-red">Escolha um alvo no campo inimigo.</p>}
               </div>
             </div>
@@ -504,7 +500,7 @@ function SlotLabel({ label }: { label: string }) {
 function MiniCard({ card, large }: { card: InPlayCard; large?: boolean }) {
   const pct = Math.max(0, Math.round((card.ps / card.maxPs) * 100));
   return (
-    <div className="size-full relative" title={card.effect?.trim() || EFFECT_LABEL[card.effect_code]}>
+    <div className="size-full relative" title={card.name}>
       {card.image_url ? (
         <img src={card.image_url} alt={card.name} className="size-full object-cover" />
       ) : (

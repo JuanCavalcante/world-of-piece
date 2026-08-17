@@ -97,7 +97,9 @@ export function pushLog(s: DuelState, side: SideKey | "system", text: string) {
 function toInPlay(c: TcgCard): InPlayCard {
   const anyCard = c as TcgCard & { atk?: number; effect_code?: string; effect?: string | null };
   const ps = Math.max(10, Number(c.power) || 50);
-  const code = (anyCard.effect_code ?? "NONE") as EffectCode;
+  // Beta: efeitos de carta estão desativados — todas entram em campo sem efeito.
+  const code = "NONE" as EffectCode;
+  void anyCard.effect_code;
   return {
     uid: uid(),
     id: c.id,
@@ -349,11 +351,20 @@ export function attackWith(s: DuelState, k: SideKey, cardUid: string, target: At
       victim.ps -= attacker.atk;
       pushLog(s, k, `${attacker.name} atacou ${victim.name} causando ${attacker.atk} de dano.`);
       s.fx = { target: other(k), kind: "hit", stamp: Date.now() + i };
-      if (victim.ps <= 0) {
+      // Contra-ataque: a carta atacante recebe dano igual ao ATK da carta defensora.
+      attacker.ps -= victim.atk;
+      pushLog(s, k, `${victim.name} revidou causando ${victim.atk} de dano em ${attacker.name}.`);
+      const victimDead = victim.ps <= 0;
+      const attackerDead = attacker.ps <= 0;
+      if (victimDead) {
         pushLog(s, k, `${victim.name} foi destruída!`);
         foe.field[target.slot] = null;
-        break;
       }
+      if (attackerDead) {
+        pushLog(s, k, `${attacker.name} foi destruída!`);
+        side.field[slotIdx] = null;
+      }
+      if (victimDead || attackerDead) break;
     } else {
       foe.hp -= attacker.atk;
       pushLog(s, k, `${attacker.name} atacou diretamente! ${foe.name} perdeu ${attacker.atk} HP.`);
