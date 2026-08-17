@@ -14,6 +14,7 @@ function SignupPage() {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [accepted, setAccepted] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [success, setSuccess] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
@@ -23,6 +24,10 @@ function SignupPage() {
     setError(null);
     setSuccess(null);
 
+    if (!accepted) {
+      setError("Você precisa aceitar os Termos de Serviço para continuar.");
+      return;
+    }
     if (password.length < 6) {
       setError("A senha deve ter pelo menos 6 caracteres.");
       return;
