@@ -107,7 +107,7 @@ function toInPlay(c: TcgCard): InPlayCard {
     image_url: c.image_url,
     rarity: c.rarity,
     cost: Math.max(0, Math.min(10, Number(c.cost) || 0)),
-    atk: Math.max(1, Number(anyCard.atk ?? 10)),
+    atk: Math.max(1, Math.round(Number(anyCard.atk)) || 1),
     ps,
     maxPs: ps,
     effect_code: EFFECT_CODES.includes(code) ? code : "NONE",
