@@ -3,11 +3,12 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { AdminLink } from "@/lib/admin/base";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { useState } from "react";
-import { Search, Settings2, Gift, ArrowUp, ArrowDown, Package, RotateCcw, Eye } from "lucide-react";
+import { Search, Settings2, Gift, ArrowUp, ArrowDown, Package, PackagePlus, RotateCcw, Eye } from "lucide-react";
 import { toast } from "sonner";
 import {
   adminAdjustLevel,
   adminGivePack,
+  adminGivePackAll,
   adminListTcgPlayers,
   adminResetDaily,
   adminResetTcgAccount,
@@ -49,6 +50,18 @@ export function TcgPlayersAdmin() {
 
   return (
     <div>
+      {isDev && (
+        <div className="mb-5">
+          <button
+            disabled={run.isPending}
+            onClick={() => run.mutate(() => adminGivePackAll(5))}
+            className="flex items-center gap-2 px-4 py-2.5 rounded-xl border border-gold/30 text-[11px] tracking-widest uppercase hover:bg-gold/10 disabled:opacity-50"
+          >
+            <PackagePlus className="size-4 text-gold" /> Dar pack de cartas para todos
+          </button>
+        </div>
+      )}
+
       <div className="relative mb-5 max-w-md">
         <Search className="absolute left-3 top-1/2 -translate-y-1/2 size-4 text-parchment/40" />
         <input
