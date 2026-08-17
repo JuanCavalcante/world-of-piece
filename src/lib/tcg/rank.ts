@@ -142,7 +142,7 @@ export async function getPublicProfile(nickname: string): Promise<PublicProfile 
   if (!r) return null;
   return {
     user_id: r.out_user_id,
-    username: r.out_username ?? "Jogador",
+    username: displayName(r),
     avatar_url: r.out_avatar_url ?? null,
     banner_url: r.out_banner_url ?? null,
     level: Number(r.out_level ?? 1),
@@ -159,6 +159,7 @@ export async function getPublicProfile(nickname: string): Promise<PublicProfile 
     rank_vr: Number(r.out_rank_vr ?? 0),
     rank_level: Number(r.out_rank_level ?? 0),
   };
+
 }
 
 export async function searchPlayers(q: string, limit = 5): Promise<PlayerSuggestion[]> {
