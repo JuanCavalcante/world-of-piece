@@ -97,7 +97,9 @@ export function pushLog(s: DuelState, side: SideKey | "system", text: string) {
 function toInPlay(c: TcgCard): InPlayCard {
   const anyCard = c as TcgCard & { atk?: number; effect_code?: string; effect?: string | null };
   const ps = Math.max(10, Number(c.power) || 50);
-  const code = (anyCard.effect_code ?? "NONE") as EffectCode;
+  // Beta: efeitos de carta estão desativados — todas entram em campo sem efeito.
+  const code = "NONE" as EffectCode;
+  void anyCard.effect_code;
   return {
     uid: uid(),
     id: c.id,
