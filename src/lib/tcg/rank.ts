@@ -82,11 +82,17 @@ export function winRatePct(wins: number, losses: number): number {
   return total === 0 ? 0 : Math.round((wins / total) * 100);
 }
 
+function displayName(r: any): string {
+  const name = r.out_username ?? "";
+  const emailLocal = r.out_email ? String(r.out_email).split("@")[0] : "";
+  return name.trim() || emailLocal.trim() || "Jogador";
+}
+
 function mapRankRow(r: any): RankRow {
   return {
     rank: Number(r.out_rank ?? 0),
     user_id: r.out_user_id,
-    username: r.out_username ?? "Jogador",
+    username: displayName(r),
     avatar_url: r.out_avatar_url ?? null,
     level: Number(r.out_level ?? 1),
     xp: Number(r.out_xp ?? 0),
@@ -99,6 +105,7 @@ function mapRankRow(r: any): RankRow {
     unique_cards: Number(r.out_unique_cards ?? 0),
   };
 }
+
 
 export async function listRanking(kind: RankKind, limit = 10): Promise<RankRow[]> {
   const { data, error } = await sb.rpc("tcg_ranking", { _kind: kind, _limit: limit });
