@@ -170,7 +170,7 @@ export function PackRevealDialog({
                   </div>
                 </div>
                 <p className="mb-2 text-[10px] uppercase tracking-widest text-parchment/50">Efeito</p>
-                <p className="text-sm text-parchment/80">{details.effect || "Sem efeito registrado."}</p>
+                <p className="text-sm text-parchment/60">Em desenvolvimento — efeitos desativados nesta versão beta.</p>
               </div>
             </div>
           )}
