@@ -285,9 +285,6 @@ export function DuelBoard({
                 <p className="text-[11px] text-gold/80">
                   {zoom.rarity} · {zoom.ps}/{zoom.maxPs} HP · {zoom.atk} ATK · {zoom.cost} MP
                 </p>
-                <p className="text-[11px] text-parchment/60 whitespace-pre-line">
-                  {zoom.effect?.trim() || EFFECT_LABEL[zoom.effect_code]}
-                </p>
                 {selected && <p className="text-[11px] text-wop-red">Escolha um alvo no campo inimigo.</p>}
               </div>
             </div>
