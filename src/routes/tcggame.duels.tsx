@@ -540,7 +540,7 @@ function DuelsPage() {
         ) : (
           <ul className="divide-y divide-gold/10">
             {history!.map((m) => {
-              const won = m.won ?? m.winner === "Você";
+              const won = m.won;
               return (
                 <li key={m.id} className="flex items-center justify-between gap-3 py-3">
                   <span className="flex items-center gap-2 min-w-0">
@@ -552,8 +552,12 @@ function DuelsPage() {
                     <span className={cn("text-sm", won ? "text-gold" : "text-wop-red")}>
                       {won ? "Vitória" : "Derrota"}
                     </span>
-                    <span className="text-xs text-parchment/40 truncate">vs {won ? m.loser : m.winner}</span>
+                    <span className="shrink-0 rounded-md border border-gold/20 px-1.5 py-0.5 text-[9px] uppercase tracking-widest text-parchment/50">
+                      {m.is_pvp ? "JxJ" : "JxIA"}
+                    </span>
+                    <span className="text-xs text-parchment/40 truncate">vs {m.opponent}</span>
                   </span>
+
                   <span className="flex items-center gap-3 shrink-0 text-[10px] uppercase tracking-widest text-parchment/50">
                     <span>{m.turns} turnos</span>
                     <span>{new Date(m.created_at).toLocaleDateString("pt-BR")}</span>

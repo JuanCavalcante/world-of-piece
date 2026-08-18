@@ -343,23 +343,29 @@ export async function listMyDecks(userId: string): Promise<TcgDeck[]> {
 
 export type DuelMatch = {
   id: string;
-  winner: string;
-  loser: string;
+  opponent: string;
   turns: number;
-  won: boolean | null;
+  won: boolean;
+  is_pvp: boolean;
   created_at: string;
 };
 
 export async function listDuelHistory(userId: string, limit = 20): Promise<DuelMatch[]> {
-  const { data, error } = await supabase
-    .from("tcg_duel_matches")
-    .select("id, winner, loser, turns, won, created_at")
-    .eq("user_id", userId)
-    .order("created_at", { ascending: false })
-    .limit(limit);
+  const { data, error } = await (supabase as any).rpc("tcg_duel_history", {
+    _user_id: userId,
+    _limit: limit,
+  });
   if (error) throw error;
-  return (data ?? []) as DuelMatch[];
+  return ((data ?? []) as any[]).map((r) => ({
+    id: r.out_match_id,
+    opponent: r.out_opponent_name || "Adversário",
+    turns: Number(r.out_turns ?? 0),
+    won: !!r.out_won,
+    is_pvp: !!r.out_is_pvp,
+    created_at: r.out_created_at,
+  }));
 }
+
 
 export async function saveDuelMatch(params: {
   userId: string;
