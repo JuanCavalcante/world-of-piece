@@ -1,5 +1,6 @@
 import { supabase } from "@/lib/supabase";
 import type { AttackTarget, DuelState } from "@/lib/tcg/duel";
+import type { DuelReward } from "@/lib/tcg/rank";
 import { startPvpMatchFn, submitPvpActionFn } from "@/lib/tcg/pvp.functions";
 
 export type QueueStatus = "IDLE" | "SEARCHING" | "MATCHED" | "IN_MATCH" | "ALREADY_MATCHED";
