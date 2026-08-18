@@ -211,7 +211,11 @@ function DuelsPage() {
         await progression.sync();
         invalidateAll();
       })
-      .catch(() => toast.error("Não foi possível salvar o resultado."));
+      .catch((e) =>
+        toast.error(
+          `Não foi possível salvar o resultado.${e instanceof Error && e.message ? ` (${e.message})` : ""}`,
+        ),
+      );
   }, [game?.over, user?.id]);
 
   const invalidateAll = useCallback(() => {
