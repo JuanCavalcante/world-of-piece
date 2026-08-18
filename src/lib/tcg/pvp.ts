@@ -65,11 +65,25 @@ export async function fetchMatchView(matchId: string): Promise<PvpMatchView> {
   return data as unknown as PvpMatchView;
 }
 
-export async function myMatchResult(matchId: string): Promise<{ won: boolean; status: string } | null> {
+export type PvpReward = DuelReward & { status: string; turns: number };
+
+export async function myMatchResult(matchId: string): Promise<PvpReward | null> {
   const { data, error } = await supabase.rpc("tcg_pvp_my_reward", { _match_id: matchId });
   if (error) throw new Error(error.message);
-  const row = one<{ out_won: boolean; out_status: string }>(data);
-  return row ? { won: !!row.out_won, status: row.out_status } : null;
+  const row = one<Record<string, unknown>>(data);
+  if (!row) return null;
+  return {
+    user_id: "",
+    won: !!row.out_won,
+    status: String(row.out_status ?? ""),
+    turns: Number(row.out_turns ?? 0),
+    xp: Number(row.out_xp ?? 0),
+    vr_delta: Number(row.out_vr_delta ?? 0),
+    vr: Number(row.out_vr ?? 0),
+    win_streak: Number(row.out_win_streak ?? 0),
+    loss_streak: Number(row.out_loss_streak ?? 0),
+    best_win_streak: Number(row.out_best_win_streak ?? 0),
+  };
 }
 
 export async function startMatch(matchId: string) {
