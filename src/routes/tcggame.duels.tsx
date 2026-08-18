@@ -99,6 +99,7 @@ function DuelsPage() {
   const { view: pvpView, refresh: refreshPvp } = usePvpMatch(pvpMatchId);
   const startedRef = useRef<string | null>(null);
   const pvpRewardedRef = useRef<string | null>(null);
+  const [pvpReward, setPvpReward] = useState<PvpReward | null>(null);
   const opponentId = pvpView?.opponent_id ?? null;
   const { data: foeProfile } = useQuery({
     queryKey: ["tcg-player-cosmetics", opponentId],
