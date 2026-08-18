@@ -24,9 +24,11 @@ import {
   activeMatch,
   joinQueue,
   leaveQueue,
+  myMatchResult,
   queueStatus,
   startMatch,
   submitAction,
+  type PvpReward,
 } from "@/lib/tcg/pvp";
 import {
   createDuel,
