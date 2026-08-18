@@ -171,7 +171,7 @@ begin
   from public.tcg_duel_matches
   where user_id = me
     and is_pvp
-    and created_at >= coalesce(m.finished_at, m.updated_at, m.created_at) - interval '2 minutes'
+    and created_at >= coalesce(m.rewarded_at, m.updated_at, m.created_at) - interval '2 minutes'
   order by created_at desc
   limit 1;
 
@@ -192,5 +192,4 @@ end $$;
 grant execute on function public.tcg_pvp_my_reward(uuid) to authenticated;
 ```
 
-> Se `tcg_pvp_matches` não tiver a coluna `finished_at` ou `updated_at`, ajuste o
-> `coalesce` acima para as colunas existentes.
+
