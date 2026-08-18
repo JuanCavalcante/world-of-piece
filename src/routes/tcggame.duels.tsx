@@ -24,9 +24,11 @@ import {
   activeMatch,
   joinQueue,
   leaveQueue,
+  myMatchResult,
   queueStatus,
   startMatch,
   submitAction,
+  type PvpReward,
 } from "@/lib/tcg/pvp";
 import {
   createDuel,
@@ -97,6 +99,7 @@ function DuelsPage() {
   const { view: pvpView, refresh: refreshPvp } = usePvpMatch(pvpMatchId);
   const startedRef = useRef<string | null>(null);
   const pvpRewardedRef = useRef<string | null>(null);
+  const [pvpReward, setPvpReward] = useState<PvpReward | null>(null);
   const opponentId = pvpView?.opponent_id ?? null;
   const { data: foeProfile } = useQuery({
     queryKey: ["tcg-player-cosmetics", opponentId],
@@ -285,6 +288,12 @@ function DuelsPage() {
         await progression.daily("DAILY_MATCHES_PLAYED", 1);
         if (pvpView.winner_id === user.id) await progression.daily("DAILY_MATCHES_WON", 1);
         await progression.sync();
+        try {
+          const r = await myMatchResult(pvpMatchId);
+          if (r) setPvpReward({ ...r, user_id: user.id });
+        } catch {
+          /* mantém apenas a mensagem de fim */
+        }
       }
       invalidateAll();
     })();
@@ -346,6 +355,7 @@ function DuelsPage() {
     setMatchFound(false);
     startedRef.current = null;
     pvpRewardedRef.current = null;
+    setPvpReward(null);
   }
 
   function closeResult() {
@@ -411,11 +421,11 @@ function DuelsPage() {
         onAttack={(uid, target) => void doPvpAction({ type: "ATTACK", uid, target })}
         onEndTurn={() => void doPvpAction({ type: "END_TURN" })}
         onSurrender={() => void doPvpAction({ type: "SURRENDER" })}
-        reward={null}
+        reward={pvpReward}
         onCloseResult={closePvp}
         endMessage={endMessage}
         overlay={
-          finished && !pvpView.state.over ? (
+          finished && !pvpReward && !pvpView.state.over ? (
             <div className="absolute inset-0 z-20 grid place-items-center bg-black/75 backdrop-blur-sm p-6">
               <div className="rounded-2xl border border-gold/30 bg-sea-surface/95 p-8 text-center">
                 <p className="font-display text-2xl mb-2">{endMessage ?? "Duelo encerrado"}</p>
