@@ -288,6 +288,12 @@ function DuelsPage() {
         await progression.daily("DAILY_MATCHES_PLAYED", 1);
         if (pvpView.winner_id === user.id) await progression.daily("DAILY_MATCHES_WON", 1);
         await progression.sync();
+        try {
+          const r = await myMatchResult(pvpMatchId);
+          if (r) setPvpReward({ ...r, user_id: user.id });
+        } catch {
+          /* mantém apenas a mensagem de fim */
+        }
       }
       invalidateAll();
     })();
