@@ -421,11 +421,11 @@ function DuelsPage() {
         onAttack={(uid, target) => void doPvpAction({ type: "ATTACK", uid, target })}
         onEndTurn={() => void doPvpAction({ type: "END_TURN" })}
         onSurrender={() => void doPvpAction({ type: "SURRENDER" })}
-        reward={null}
+        reward={pvpReward}
         onCloseResult={closePvp}
         endMessage={endMessage}
         overlay={
-          finished && !pvpView.state.over ? (
+          finished && !pvpReward && !pvpView.state.over ? (
             <div className="absolute inset-0 z-20 grid place-items-center bg-black/75 backdrop-blur-sm p-6">
               <div className="rounded-2xl border border-gold/30 bg-sea-surface/95 p-8 text-center">
                 <p className="font-display text-2xl mb-2">{endMessage ?? "Duelo encerrado"}</p>
