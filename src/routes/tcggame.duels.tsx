@@ -355,6 +355,7 @@ function DuelsPage() {
     setMatchFound(false);
     startedRef.current = null;
     pvpRewardedRef.current = null;
+    setPvpReward(null);
   }
 
   function closeResult() {
