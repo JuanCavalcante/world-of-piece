@@ -84,7 +84,11 @@ export function TcgCardsAdmin() {
       setDraft(null);
       toast.success("Carta salva.");
     },
-    onError: (e: unknown) => toast.error(e instanceof Error ? e.message : "Falha ao salvar a carta."),
+    onError: (e: unknown) => {
+      const err = e as { message?: string; details?: string; hint?: string } | null;
+      const msg = [err?.message, err?.details, err?.hint].filter(Boolean).join(" — ");
+      toast.error(msg || "Falha ao salvar a carta.");
+    },
   });
 
   const remove = useMutation({
