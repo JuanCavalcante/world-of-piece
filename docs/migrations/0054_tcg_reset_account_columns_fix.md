@@ -83,3 +83,45 @@ GRANT EXECUTE ON FUNCTION public.admin_tcg_reset_account(uuid) TO authenticated;
 
 NOTIFY pgrst, 'reload schema';
 ```
+
+## Reset global (mesma correção)
+
+```sql
+CREATE OR REPLACE FUNCTION public.admin_tcg_reset_all_accounts()
+RETURNS int LANGUAGE plpgsql SECURITY DEFINER SET search_path = public AS $$
+DECLARE
+  _t text;
+  _count int;
+  _tables text[] := ARRAY[
+    'deck_cards','decks','user_cards','daily_rewards','user_achievements',
+    'user_daily_missions','daily_streaks','tcg_event_counters',
+    'tcg_duel_matches','tcg_player_stats','tcg_pvp_queue','tcg_pvp_matches',
+    'tcg_market_listings'
+  ];
+BEGIN
+  IF NOT public.has_role(auth.uid(), 'admin') THEN
+    RAISE EXCEPTION 'Apenas administradores podem resetar contas.';
+  END IF;
+
+  FOREACH _t IN ARRAY _tables LOOP
+    IF to_regclass('public.' || _t) IS NOT NULL THEN
+      EXECUTE format('DELETE FROM public.%I', _t);
+    END IF;
+  END LOOP;
+
+  IF to_regclass('public.tcg_wallets') IS NOT NULL THEN
+    UPDATE public.tcg_wallets SET essence = 0, common_fragments = 0, uncommon_fragments = 0,
+      rare_fragments = 0, epic_fragments = 0, legendary_fragments = 0, updated_at = now();
+  END IF;
+
+  UPDATE public.tcg_players
+     SET level = 1, xp = 0, wins = 0, losses = 0, last_daily_reward_at = NULL, packs = 0;
+
+  SELECT count(*)::int INTO _count FROM public.tcg_players;
+  RETURN _count;
+END $$;
+
+GRANT EXECUTE ON FUNCTION public.admin_tcg_reset_all_accounts() TO authenticated;
+
+NOTIFY pgrst, 'reload schema';
+```
