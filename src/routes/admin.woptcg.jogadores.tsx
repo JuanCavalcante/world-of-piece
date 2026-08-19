@@ -37,7 +37,13 @@ export function TcgPlayersAdmin() {
       qc.invalidateQueries({ queryKey: ["admin-tcg-players"] });
       toast.success("Ação aplicada.");
     },
-    onError: (e: unknown) => toast.error(e instanceof Error ? e.message : "Falha ao aplicar ação."),
+    onError: (e: unknown) => {
+      const msg =
+        typeof e === "object" && e !== null && "message" in e
+          ? String((e as { message?: unknown }).message)
+          : "";
+      toast.error(msg || "Falha ao aplicar ação.");
+    },
   });
 
   const filtered = (data ?? []).filter((p) => {
