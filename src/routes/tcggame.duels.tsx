@@ -255,6 +255,7 @@ function DuelsPage() {
         .then((res) => {
           if (res.status === "MATCHED" && res.matchId) {
             setSearching(false);
+            audioManager.playSfx("match-found");
             setMatchFound(true);
             setPvpMatchId(res.matchId);
           }
@@ -307,6 +308,7 @@ function DuelsPage() {
     try {
       const res = await joinQueue(deckId);
       if (res.status === "MATCHED" || res.status === "IN_MATCH") {
+        audioManager.playSfx("match-found");
         setMatchFound(true);
         setPvpMatchId(res.matchId);
         setSearching(false);
