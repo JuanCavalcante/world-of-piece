@@ -3,7 +3,7 @@
  * Instância única reutilizável (nada de `new Audio()` a cada ação).
  */
 
-export type SfxName = "attack" | "damage" | "turn" | "pack-open" | "legendary";
+export type SfxName = "attack" | "damage" | "turn" | "pack-open" | "legendary" | "match-found";
 
 const SFX_FILES: Record<SfxName, string> = {
   attack: "/sounds/attack.mp3",
@@ -11,6 +11,7 @@ const SFX_FILES: Record<SfxName, string> = {
   turn: "/sounds/turn.mp3",
   "pack-open": "/sounds/pack-open.mp3",
   legendary: "/sounds/legendary.mp3",
+  "match-found": "/sounds/match-found.mp3",
 };
 
 const MUSIC_FILE = "/music/battle-theme.mp3";
