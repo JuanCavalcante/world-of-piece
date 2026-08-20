@@ -331,6 +331,11 @@ function DecksPage() {
                                 <div className="absolute bottom-2 left-2 right-2">
                                     <p className="text-[10px] font-bold truncate">{card.name}</p>
                                     <p className="text-[8px] text-gold/80 uppercase tracking-widest">x{dc.quantity}</p>
+                                    <p className="text-[8px] font-bold tracking-widest text-parchment/80">
+                                        <span className="text-wop-red">{card.atk ?? 0} ATK</span>
+                                        <span className="text-parchment/40"> · </span>
+                                        <span className="text-emerald-300">{card.power ?? 0} HP</span>
+                                    </p>
                                 </div>
                                 <button 
                                     onClick={() => removeCard(dc.card_id)}
@@ -413,6 +418,11 @@ function DecksPage() {
                                     <CardCost cost={c.cost ?? 0} />
                                     <div className="absolute inset-x-0 bottom-0 bg-black/70 p-1.5 text-center">
                                         <p className="text-[9px] font-bold truncate mb-0.5">{c.name}</p>
+                                        <p className="text-[8px] font-bold tracking-widest">
+                                            <span className="text-wop-red">{c.atk ?? 0} ATK</span>
+                                            <span className="text-parchment/40"> · </span>
+                                            <span className="text-emerald-300">{c.power ?? 0} HP</span>
+                                        </p>
                                         <p className="text-[8px] text-parchment/50">Disponível: {remaining}</p>
                                     </div>
                                     {remaining > 0 && (

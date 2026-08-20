@@ -14,6 +14,7 @@ import { AudioMenu } from "@/components/tcg/audio-menu";
 import { audioManager } from "@/lib/audio-manager";
 import { useProgression } from "@/hooks/use-progression";
 import { WalletDisplay } from "@/components/tcg/wallet-display";
+import { useOnlineCount } from "@/hooks/use-online-count";
 
 type TcgNavItem = {
   to: "/tcggame" | "/tcggame/cards" | "/tcggame/decks" | "/tcggame/duels" | "/tcggame/achievements" | "/tcggame/daily" | "/tcggame/trade" | "/tcggame/craft" | "/tcggame/rank";
@@ -195,9 +196,12 @@ export function TcgShell() {
           >
             <Menu className="size-5" />
           </button>
-          <span className="hidden lg:block text-[11px] tracking-[0.3em] uppercase text-gold/70">
-            World of Piece — TCG
-          </span>
+          <div className="flex items-center gap-3">
+            <span className="hidden lg:block text-[11px] tracking-[0.3em] uppercase text-gold/70">
+              World of Piece — TCG
+            </span>
+            <OnlineUsersBadge />
+          </div>
 
           <div className="flex items-center gap-2">
             <WalletDisplay />
@@ -216,6 +220,22 @@ export function TcgShell() {
 
       </div>
     </div>
+  );
+}
+
+function OnlineUsersBadge() {
+  const online = useOnlineCount();
+  return (
+    <span
+      className="flex items-center gap-1.5 rounded-full border border-emerald-400/30 bg-emerald-400/10 px-2.5 py-1 text-[10px] font-medium uppercase tracking-[0.15em] text-emerald-300"
+      title="Usuários conectados agora"
+    >
+      <span className="relative flex size-1.5">
+        <span className="absolute inline-flex size-full animate-ping rounded-full bg-emerald-400 opacity-70" />
+        <span className="relative inline-flex size-1.5 rounded-full bg-emerald-400" />
+      </span>
+      Usuários online {online}
+    </span>
   );
 }
 
