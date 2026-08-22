@@ -13,6 +13,8 @@ import {
   type InPlayCard,
   type Side,
 } from "@/lib/tcg/duel";
+import { pendingChoiceTargets } from "@/lib/tcg/effects/engine";
+import { hasKeyword, hasStatus } from "@/lib/tcg/effects/status";
 
 const DUEL_BG_URL = "https://i.imgur.com/nj9Nmxx.jpg";
 
@@ -31,6 +33,8 @@ export type DuelBoardProps = {
   onAttack: (uid: string, target: AttackTarget) => void;
   onEndTurn: () => void;
   onSurrender: () => void;
+  /** Resolve a escolha de alvo de um efeito pendente (null = ignorar o efeito). */
+  onResolveChoice?: (targetUid: string | null) => void;
   reward: DuelReward | null;
   onCloseResult: () => void;
   /** Camada extra (ex.: "reconectando..." no PvP). */
@@ -49,6 +53,7 @@ export function DuelBoard({
   onAttack,
   onEndTurn,
   onSurrender,
+  onResolveChoice,
   reward,
   onCloseResult,
   overlay,
@@ -60,6 +65,15 @@ export function DuelBoard({
   const [confirmSurrender, setConfirmSurrender] = useState(false);
 
   const yourTurn = game.turn === "you" && !game.over && canAct;
+
+  // Modo de escolha de alvo de efeito (Effect Engine v2)
+  const choiceMode = !!game.pendingChoice && game.pendingChoice.side === "you" && !game.over && !!onResolveChoice;
+  const choiceUids = new Set(
+    choiceMode ? pendingChoiceTargets(game, "you").map((r) => r.card.uid) : [],
+  );
+  const choiceCard = choiceMode
+    ? game.you.field.find((c) => c?.uid === game.pendingChoice?.cardUid)
+    : null;
 
   const dropToField = (slot: number) => {
     if (!yourTurn || !dragging) return;
@@ -77,6 +91,10 @@ export function DuelBoard({
   const onOwnFieldClick = (slot: number) => {
     const card = game.you.field[slot];
     if (!card) return;
+    if (choiceMode) {
+      if (choiceUids.has(card.uid)) onResolveChoice!(card.uid);
+      return;
+    }
     if (!yourTurn) {
       setZoom(card);
       return;
@@ -93,12 +111,17 @@ export function DuelBoard({
   };
 
   const foeGuarded = hasGuard(game.foe);
-  const canHitPlayer = !!selected && yourTurn && isValidTarget(game, "you", { kind: "player" });
+  const canHitPlayer =
+    !!selected && yourTurn && !choiceMode && isValidTarget(game, "you", { kind: "player" }, selected);
 
   const onFoeFieldClick = (slot: number) => {
     const card = game.foe.field[slot];
     if (!card) return;
-    if (selected && yourTurn && isValidTarget(game, "you", { kind: "card", slot })) {
+    if (choiceMode) {
+      if (choiceUids.has(card.uid)) onResolveChoice!(card.uid);
+      return;
+    }
+    if (selected && yourTurn && isValidTarget(game, "you", { kind: "card", slot }, selected)) {
       resolveAttack({ kind: "card", slot });
     } else setZoom(card);
   };
