@@ -76,8 +76,8 @@ function ShopPage() {
   return (
     <div className="space-y-6">
       <TcgPageHeader
-        icon={ShoppingBag}
-        title="Loja"
+        eyebrow="Loja"
+        title="Pacotes de Cartas"
         description="Troque a Essência acumulada nas batalhas por Pacotes de Cartas."
       />
 
