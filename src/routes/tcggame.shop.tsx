@@ -1,10 +1,10 @@
-import { createFileRoute, useNavigate } from "@tanstack/react-router";
-import { useEffect, useState } from "react";
+import { createFileRoute } from "@tanstack/react-router";
+import { useState } from "react";
 import { useAuth } from "@/hooks/use-auth";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { listShopProducts, purchaseShopProduct, type ShopProduct } from "@/lib/tcg/shop";
 import { getMyWallet } from "@/lib/tcg/wallet";
-import { TcgPageHeader } from "@/components/tcg/tcg-page-header";
+import { TcgPageHeader } from "@/components/tcg/tcg-shell";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -32,14 +32,9 @@ export const Route = createFileRoute("/tcggame/shop")({
 });
 
 function ShopPage() {
-  const { user, loading } = useAuth();
-  const navigate = useNavigate();
+  const { user } = useAuth();
   const queryClient = useQueryClient();
   const [selected, setSelected] = useState<ShopProduct | null>(null);
-
-  useEffect(() => {
-    if (!loading && !user) navigate({ to: "/login" });
-  }, [user, loading, navigate]);
 
   const productsQuery = useQuery({
     queryKey: ["tcg-shop-products"],
@@ -73,7 +68,7 @@ function ShopPage() {
     },
   });
 
-  if (loading || !user) return null;
+  if (!user) return null;
 
   const products = productsQuery.data ?? [];
   const saldoApos = selected ? essence - selected.price_essence : 0;
