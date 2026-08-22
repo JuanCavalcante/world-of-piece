@@ -1,5 +1,5 @@
 import { toast } from "sonner";
-import { Trophy, CheckCircle2, Gift, Sparkles, Hammer, Recycle, Droplet, Coins, ArrowLeftRight, Check, X } from "lucide-react";
+import { Trophy, CheckCircle2, Gift, Sparkles, Hammer, Recycle, Droplet, Coins, ArrowLeftRight, Check, X, ShoppingBag } from "lucide-react";
 
 export type RewardToastKind =
   | "achievement"
@@ -13,7 +13,8 @@ export type RewardToastKind =
   | "trade-received"
   | "trade-accepted"
   | "trade-declined"
-  | "market-expired";
+  | "market-expired"
+  | "shop";
 
 const ICONS: Record<RewardToastKind, typeof Trophy> = {
   achievement: Trophy,
@@ -28,6 +29,7 @@ const ICONS: Record<RewardToastKind, typeof Trophy> = {
   "trade-accepted": Check,
   "trade-declined": X,
   "market-expired": Coins,
+  shop: ShoppingBag,
 };
 
 const HEADINGS: Record<RewardToastKind, string> = {
@@ -43,6 +45,7 @@ const HEADINGS: Record<RewardToastKind, string> = {
   "trade-accepted": "Troca aceita",
   "trade-declined": "Oferta recusada",
   "market-expired": "Anúncio expirado",
+  shop: "Compra realizada",
 };
 
 export function rewardToast(opts: {
