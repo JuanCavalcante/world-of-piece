@@ -1,6 +1,6 @@
 import { Link, Outlet, useNavigate, useRouterState } from "@tanstack/react-router";
 import { useState, useEffect } from "react";
-import { LayoutDashboard, Layers, BookOpen, Swords, Trophy, CalendarCheck, Menu, X, LogOut, ArrowLeft, Bell, Check, Trash2, ArrowLeftRight, Medal, Hammer, Gem, FlaskConical } from "lucide-react";
+import { LayoutDashboard, Layers, BookOpen, Swords, Trophy, CalendarCheck, Menu, X, LogOut, ArrowLeft, Bell, Check, Trash2, ArrowLeftRight, Medal, Hammer, Gem, FlaskConical, ShoppingBag } from "lucide-react";
 import { useAuth } from "@/hooks/use-auth";
 import wopLogo from "@/assets/wop-logo.png";
 import { ThemeToggle } from "@/components/theme-toggle";
@@ -17,7 +17,7 @@ import { WalletDisplay } from "@/components/tcg/wallet-display";
 import { useOnlineCount } from "@/hooks/use-online-count";
 
 type TcgNavItem = {
-  to: "/tcggame" | "/tcggame/cards" | "/tcggame/decks" | "/tcggame/duels" | "/tcggame/achievements" | "/tcggame/daily" | "/tcggame/trade" | "/tcggame/craft" | "/tcggame/rank";
+  to: "/tcggame" | "/tcggame/cards" | "/tcggame/decks" | "/tcggame/duels" | "/tcggame/achievements" | "/tcggame/daily" | "/tcggame/trade" | "/tcggame/craft" | "/tcggame/rank" | "/tcggame/shop";
   label: string;
   icon: typeof LayoutDashboard;
   exact?: boolean;
@@ -31,6 +31,7 @@ const NAV: TcgNavItem[] = [
   { to: "/tcggame/daily", label: "Diárias", icon: CalendarCheck },
   { to: "/tcggame/craft", label: "Criação", icon: Hammer },
   { to: "/tcggame/trade", label: "Trocas", icon: ArrowLeftRight },
+  { to: "/tcggame/shop", label: "Loja", icon: ShoppingBag },
   { to: "/tcggame/rank", label: "Rank", icon: Medal },
   { to: "/tcggame/duels", label: "Duelos", icon: Swords },
 ];
