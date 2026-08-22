@@ -438,6 +438,7 @@ function BoardSide({
   targetable,
   selectedUid,
   bannerUrl,
+  choiceUids,
   onZoom,
   onFieldDrop,
   onFieldClick,
@@ -514,6 +515,7 @@ function BoardSide({
               c && rarityStyle(c.rarity),
               c && selectedUid === c.uid && "ring-2 ring-gold",
               c && targetable && "ring-2 ring-wop-red/70 animate-pulse",
+              c && choiceUids?.has(c.uid) && "ring-2 ring-emerald-400 animate-pulse",
               c && !targetable && !opponent && c.attacked && "opacity-60",
             )}
           >
@@ -535,12 +537,37 @@ function SlotLabel({ label }: { label: string }) {
 
 function MiniCard({ card, large }: { card: InPlayCard; large?: boolean }) {
   const pct = Math.max(0, Math.round((card.ps / card.maxPs) * 100));
+  const badges: { icon: string; label: string }[] = [];
+  if (hasKeyword(card, "GUARD") || card.effect_code === "GUARD") badges.push({ icon: "🛡", label: "Guarda" });
+  if (hasKeyword(card, "FLYING")) badges.push({ icon: "🕊", label: "Vôo" });
+  if (hasKeyword(card, "RUSH") || hasStatus(card, "RUSH")) badges.push({ icon: "⚡", label: "Ímpeto" });
+  if (hasStatus(card, "STEALTH") || hasStatus(card, "STEALTH_TEMP") || hasStatus(card, "STEALTH_UNTIL_ATTACK"))
+    badges.push({ icon: "👁", label: "Furtividade" });
+  if (hasStatus(card, "LAZY")) badges.push({ icon: "💤", label: "Preguiça" });
+  if (hasStatus(card, "SLEEP")) badges.push({ icon: "🌙", label: "Sono" });
+  if (hasStatus(card, "POISON")) badges.push({ icon: "☠", label: "Envenenamento" });
   return (
     <div className="size-full relative" title={card.name}>
       {card.image_url ? (
         <img src={card.image_url} alt={card.name} className="size-full object-cover" />
       ) : (
         <div className="size-full bg-sea-deep/70" />
+      )}
+      {badges.length > 0 && (
+        <div className="absolute top-1 left-1 flex flex-col gap-0.5">
+          {badges.map((b) => (
+            <span
+              key={b.label}
+              title={b.label}
+              className={cn(
+                "grid place-items-center rounded-full bg-black/70 border border-gold/40",
+                large ? "size-6 text-[11px]" : "size-4 text-[8px]",
+              )}
+            >
+              {b.icon}
+            </span>
+          ))}
+        </div>
       )}
       <span
         className={cn(

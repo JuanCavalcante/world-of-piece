@@ -15,6 +15,7 @@ import {
   listDuelHistory,
   getAiBannerUrl,
   getPlayerCosmetics,
+  attachCardAbilities,
   type TcgCard,
 } from "@/lib/tcg/api";
 import { finishMatch, type DuelReward } from "@/lib/tcg/rank";
@@ -35,6 +36,7 @@ import {
   attackWith,
   endTurn,
   playCard,
+  resolveChoice,
   runAiTurn,
   surrender,
   FIELD_SLOTS,
@@ -67,7 +69,10 @@ function DuelsPage() {
   const { user } = useAuth();
   const qc = useQueryClient();
   const progression = useProgression();
-  const { data: pool, isLoading } = useQuery({ queryKey: ["tcg-cards"], queryFn: () => listCards("ACTIVE") });
+  const { data: pool, isLoading } = useQuery({
+    queryKey: ["tcg-cards", "with-abilities"],
+    queryFn: () => listCards("ACTIVE").then(attachCardAbilities),
+  });
   const { data: decks, isLoading: loadingDecks } = useQuery({
     queryKey: ["tcg-user-decks", user?.id],
     queryFn: () => listMyDecks(user!.id),
@@ -423,6 +428,10 @@ function DuelsPage() {
         onAttack={(uid, target) => void doPvpAction({ type: "ATTACK", uid, target })}
         onEndTurn={() => void doPvpAction({ type: "END_TURN" })}
         onSurrender={() => void doPvpAction({ type: "SURRENDER" })}
+        onResolveChoice={(targetUid) => {
+          const pc = pvpView.state?.pendingChoice;
+          if (pc) void doPvpAction({ type: "RESOLVE_CHOICE", uid: pc.cardUid, targetUid });
+        }}
         reward={pvpReward}
         onCloseResult={closePvp}
         endMessage={endMessage}
@@ -476,6 +485,7 @@ function DuelsPage() {
         onAttack={(uid, target) => apply((s) => attackWith(s, "you", uid, target))}
         onEndTurn={() => apply((s) => endTurn(s))}
         onSurrender={() => apply((s) => surrender(s, "you"))}
+        onResolveChoice={(targetUid) => apply((s) => void resolveChoice(s, "you", targetUid))}
         reward={reward}
         onCloseResult={closeResult}
       />
