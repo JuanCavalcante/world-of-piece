@@ -97,7 +97,8 @@ export async function submitAction(
     | { type: "PLAY"; uid: string; slot: number }
     | { type: "ATTACK"; uid: string; target: AttackTarget }
     | { type: "END_TURN" }
-    | { type: "SURRENDER" },
+    | { type: "SURRENDER" }
+    | { type: "RESOLVE_CHOICE"; uid: string; targetUid: string | null },
 ) {
   return submitPvpActionFn({ data: { matchId, action } });
 }

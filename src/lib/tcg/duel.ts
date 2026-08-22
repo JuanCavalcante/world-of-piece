@@ -1,4 +1,24 @@
 import type { TcgCard } from "@/lib/tcg/api";
+import type { Ability, KeywordInstance, Modifier, PendingChoice, StatusInstance } from "@/lib/tcg/effects/types";
+import {
+  aiAutoResolve,
+  emit,
+  playAbilities,
+  recomputeAuras,
+  resolveChoice,
+  tickTurnEnd,
+  tickTurnStart,
+} from "@/lib/tcg/effects/engine";
+import {
+  blocksAttack,
+  hasKeyword,
+  isGuard,
+  isUntargetable,
+  noCounterClasses,
+  passiveAmount,
+  removeStatus,
+} from "@/lib/tcg/effects/status";
+import { dealCardDamage } from "@/lib/tcg/effects/damage";
 
 export const EFFECT_CODES = [
   "NONE",
@@ -42,6 +62,17 @@ export type InPlayCard = {
   effect: string | null;
   attacked: boolean;
   ready: boolean;
+  /** Effect Engine v2 — taxonomia e habilidades */
+  type: string | null;
+  race: string | null;
+  organization: string | null;
+  family: string | null;
+  abilities: Ability[];
+  keywords: KeywordInstance[];
+  statuses: StatusInstance[];
+  mods: Modifier[];
+  baseAtk: number;
+  baseMaxPs: number;
 };
 
 export type SideKey = "you" | "foe";
@@ -76,10 +107,12 @@ export type DuelState = {
   over: boolean;
   winner: SideKey | null;
   fx: { target: SideKey | null; kind: "hit" | "attack" | null; stamp: number };
+  /** Efeito "ao entrar" aguardando escolha de alvo do jogador. */
+  pendingChoice?: PendingChoice | null;
 };
 
 /** Formato atual do DuelState serializado. Incrementar ao mudar a forma do estado. */
-export const ENGINE_STATE_VERSION = 1;
+export const ENGINE_STATE_VERSION = 2;
 
 const MAX_AP = 10;
 export const START_HP = 30;
@@ -97,9 +130,10 @@ export function pushLog(s: DuelState, side: SideKey | "system", text: string) {
 function toInPlay(c: TcgCard): InPlayCard {
   const anyCard = c as TcgCard & { atk?: number; effect_code?: string; effect?: string | null };
   const ps = Math.max(1, Math.round(Number(c.power)) || 1);
-  // Beta: efeitos de carta estão desativados — todas entram em campo sem efeito.
+  // Beta: efeitos legados (effect_code) seguem desativados — o motor novo usa `abilities`.
   const code = "NONE" as EffectCode;
   void anyCard.effect_code;
+  const atk = Math.max(1, Math.round(Number(anyCard.atk)) || 1);
   return {
     uid: uid(),
     id: c.id,
@@ -107,13 +141,23 @@ function toInPlay(c: TcgCard): InPlayCard {
     image_url: c.image_url,
     rarity: c.rarity,
     cost: Math.max(0, Math.min(10, Number(c.cost) || 0)),
-    atk: Math.max(1, Math.round(Number(anyCard.atk)) || 1),
+    atk,
     ps,
     maxPs: ps,
     effect_code: EFFECT_CODES.includes(code) ? code : "NONE",
     effect: anyCard.effect ?? null,
     attacked: false,
     ready: false,
+    type: c.type ?? null,
+    race: c.race ?? null,
+    organization: c.organization ?? null,
+    family: c.family ?? null,
+    abilities: Array.isArray(c.abilities) ? c.abilities : [],
+    keywords: [],
+    statuses: [],
+    mods: [],
+    baseAtk: atk,
+    baseMaxPs: ps,
   };
 }
 
@@ -161,6 +205,7 @@ export function createDuel(pool: TcgCard[], playerName = "Você", playerDeck?: T
     over: false,
     winner: null,
     fx: { target: null, kind: null, stamp: 0 },
+    pendingChoice: null,
   };
 
   pushLog(s, "system", `O duelo começou! Você tem ${START_HP} HP e 1 PA.`);
@@ -184,6 +229,7 @@ export function createPvpDuel(
     over: false,
     winner: null,
     fx: { target: null, kind: null, stamp: 0 },
+    pendingChoice: null,
   };
   pushLog(s, "system", `O duelo começou! ${p1Name} joga primeiro.`);
   return s;
@@ -227,8 +273,11 @@ export function startTurn(s: DuelState, k: SideKey) {
   });
   side.maxAp = Math.min(MAX_AP, side.maxAp + 1);
   side.ap = side.maxAp;
+  tickTurnStart(s, k);
+  recomputeAuras(s);
   draw(s, k, 2);
   pushLog(s, k, `Turno de ${side.name} — ${side.ap}/${side.maxAp} PA.`);
+  emit(s, "ON_START_TURN", { side: k });
 }
 
 function firstEmptyField(side: Side) {
@@ -256,7 +305,16 @@ export function playCard(s: DuelState, k: SideKey, cardUid: string, slot?: numbe
   card.ready = card.effect_code === "SWAP_WITH_DEFENSE";
   side.field[target] = card;
   pushLog(s, k, `${side.name} jogou ${card.name} (${card.cost} MP) no Campo.`);
-  applyEffect(s, k, card);
+  if (card.abilities.length) {
+    // Effect Engine v2: keywords base/condicionais, Ímpeto e gatilhos ON_PLAY.
+    recomputeAuras(s);
+    if (hasKeyword(card, "RUSH")) card.ready = true;
+    playAbilities(s, k, card);
+    if (hasKeyword(card, "RUSH")) card.ready = true;
+    recomputeAuras(s);
+  } else {
+    applyEffect(s, k, card);
+  }
 }
 
 function applyEffect(s: DuelState, k: SideKey, card: InPlayCard) {
@@ -282,10 +340,12 @@ function applyEffect(s: DuelState, k: SideKey, card: InPlayCard) {
     }
     case "BUFF_ATK_25":
       card.atk += 25;
+      card.baseAtk += 25;
       pushLog(s, k, `Efeito de ${card.name}: +25 ATK.`);
       break;
     case "BUFF_PS_30":
       card.maxPs += 30;
+      card.baseMaxPs += 30;
       card.ps += 30;
       pushLog(s, k, `Efeito de ${card.name}: +30 HP.`);
       break;
@@ -301,15 +361,34 @@ function applyEffect(s: DuelState, k: SideKey, card: InPlayCard) {
 }
 
 export function hasGuard(side: Side) {
-  return side.field.some((c) => !!c && c.effect_code === "GUARD");
+  return side.field.some((c) => !!c && isGuard(c));
 }
 
-/** Se o defensor tiver ao menos uma carta com Guarda, só é possível atacar essas cartas. */
-export function isValidTarget(s: DuelState, k: SideKey, target: AttackTarget) {
+/**
+ * Valida o alvo de um ataque considerando Guarda, Furtividade/Sono e Vôo.
+ * `attackerUid` identifica o atacante (necessário para Fura-Guarta, Vôo e
+ * Perfurador de Furtividade); sem ele assume-se um atacante sem keywords.
+ */
+export function isValidTarget(s: DuelState, k: SideKey, target: AttackTarget, attackerUid?: string | null) {
   const foe = s[other(k)];
-  if (!hasGuard(foe)) return target.kind === "player" || !!foe.field[target.slot];
-  if (target.kind === "player") return false;
-  return foe.field[target.slot]?.effect_code === "GUARD";
+  const attacker = attackerUid ? (s[k].field.find((c) => c?.uid === attackerUid) ?? null) : null;
+  const bypassGuard = !!attacker && (hasKeyword(attacker, "IGNORE_GUARD") || hasKeyword(attacker, "FLYING"));
+  const guards = foe.field.filter((c): c is InPlayCard => !!c && isGuard(c));
+
+  if (target.kind === "player") {
+    return !guards.length || bypassGuard;
+  }
+  const victim = foe.field[target.slot];
+  if (!victim) return false;
+  if (guards.length && !bypassGuard && !isGuard(victim)) return false;
+  if (isUntargetable(victim) && !(attacker && hasKeyword(attacker, "PIERCE_STEALTH"))) return false;
+  if (
+    hasKeyword(victim, "FLYING") &&
+    !(attacker && (hasKeyword(attacker, "FLYING") || attacker.type === "Atirador"))
+  ) {
+    return false;
+  }
+  return true;
 }
 
 export function surrender(s: DuelState, k: SideKey) {
@@ -322,53 +401,85 @@ export function surrender(s: DuelState, k: SideKey) {
 export function canAttack(s: DuelState, k: SideKey, cardUid: string) {
   if (s.over || s.turn !== k || !canAttackThisTurn(s, k)) return false;
   const card = s[k].field.find((c) => c?.uid === cardUid);
-  return !!card && card.ready && !card.attacked;
+  return !!card && card.ready && !card.attacked && !blocksAttack(card);
 }
 
 export function attackWith(s: DuelState, k: SideKey, cardUid: string, target: AttackTarget) {
   if (s.over) return;
   const side = s[k];
-  const foe = s[other(k)];
+  const foeKey = other(k);
+  const foe = s[foeKey];
   const slotIdx = side.field.findIndex((c) => c?.uid === cardUid);
   const attacker = slotIdx === -1 ? null : side.field[slotIdx];
   if (!attacker || !attacker.ready || attacker.attacked) return;
   if (!canAttackThisTurn(s, k)) return;
-  if (!isValidTarget(s, k, target)) {
-    pushLog(s, k, `Há cartas com Guarda em campo — ataque-as primeiro.`);
+  if (blocksAttack(attacker)) {
+    pushLog(s, k, `${attacker.name} não pode atacar agora.`);
+    return;
+  }
+  if (!isValidTarget(s, k, target, cardUid)) {
+    pushLog(s, k, `Alvo inválido para este ataque.`);
     return;
   }
   attacker.attacked = true;
   side.attacksUsed += 1;
+  s.fx = { target: foeKey, kind: "attack", stamp: Date.now() };
+
+  // Gatilhos de declaração (ex.: Corte Silencioso, Dano em Área)
+  emit(s, "ON_ATTACK_DECLARED", {
+    side: k,
+    source: attacker,
+    victimSide: foeKey,
+    victimSlot: target.kind === "card" ? target.slot : undefined,
+  });
+  recomputeAuras(s);
+  if (s.over) return;
+
+  // Atacar quebra a Furtividade "até atacar".
+  removeStatus(attacker, "STEALTH_UNTIL_ATTACK");
+
   const strikes = attacker.effect_code === "DOUBLE_ATTACK" ? 2 : 1;
-  s.fx = { target: other(k), kind: "attack", stamp: Date.now() };
 
   for (let i = 0; i < strikes; i++) {
     if (s.over) break;
-    if (!isValidTarget(s, k, target)) break;
+    const aIdx = side.field.findIndex((c) => c?.uid === cardUid);
+    if (aIdx === -1) break;
+    const att = side.field[aIdx]!;
+    if (!isValidTarget(s, k, target, cardUid)) break;
+
     if (target.kind === "card") {
       const victim = foe.field[target.slot];
       if (!victim) break;
-      victim.ps -= attacker.atk;
-      pushLog(s, k, `${attacker.name} atacou ${victim.name} causando ${attacker.atk} de dano.`);
-      s.fx = { target: other(k), kind: "hit", stamp: Date.now() + i };
-      // Contra-ataque: a carta atacante recebe dano igual ao ATK da carta defensora.
-      attacker.ps -= victim.atk;
-      pushLog(s, k, `${victim.name} revidou causando ${victim.atk} de dano em ${attacker.name}.`);
-      const victimDead = victim.ps <= 0;
-      const attackerDead = attacker.ps <= 0;
-      if (victimDead) {
-        pushLog(s, k, `${victim.name} foi destruída!`);
-        foe.field[target.slot] = null;
+      const victimUid = victim.uid;
+      const irreducible = passiveAmount(att, "IRREDUCIBLE_BONUS");
+      const ignoreReduction = hasKeyword(att, "IGNORE_REDUCTION");
+      const thorns = passiveAmount(victim, "THORNS");
+
+      pushLog(s, k, `${att.name} atacou ${victim.name}.`);
+      s.fx = { target: foeKey, kind: "hit", stamp: Date.now() + i };
+      const res = dealCardDamage(s, emit, foeKey, target.slot, att.atk, { irreducible, ignoreReduction });
+
+      // Contra-ataque + reflexo (Cobertura e Alta Voltagem podem anular).
+      const aIdx2 = side.field.findIndex((c) => c?.uid === cardUid);
+      const attAlive = aIdx2 !== -1 ? side.field[aIdx2] : null;
+      const victimAlive = foe.field.find((c) => c?.uid === victimUid) ?? null;
+      if (attAlive && !hasKeyword(attAlive, "NO_REBOUND")) {
+        let counter = thorns;
+        if (victimAlive && !noCounterClasses(attAlive).includes(String(victimAlive.type ?? ""))) {
+          counter += victimAlive.atk;
+        }
+        if (counter > 0) {
+          pushLog(s, foeKey, `${victim.name} revidou causando ${counter} de dano em ${attAlive.name}.`);
+          dealCardDamage(s, emit, k, aIdx2, counter, { label: "contra-ataque" });
+        }
       }
-      if (attackerDead) {
-        pushLog(s, k, `${attacker.name} foi destruída!`);
-        side.field[slotIdx] = null;
-      }
-      if (victimDead || attackerDead) break;
+
+      const attStill = side.field.some((c) => c?.uid === cardUid);
+      if (res.died || !attStill) break;
     } else {
-      foe.hp -= attacker.atk;
-      pushLog(s, k, `${attacker.name} atacou diretamente! ${foe.name} perdeu ${attacker.atk} HP.`);
-      s.fx = { target: other(k), kind: "hit", stamp: Date.now() + i };
+      foe.hp -= att.atk;
+      pushLog(s, k, `${att.name} atacou diretamente! ${foe.name} perdeu ${att.atk} HP.`);
+      s.fx = { target: foeKey, kind: "hit", stamp: Date.now() + i };
       if (foe.hp <= 0) {
         foe.hp = 0;
         s.over = true;
@@ -378,9 +489,22 @@ export function attackWith(s: DuelState, k: SideKey, cardUid: string, target: At
       }
     }
   }
+
+  emit(s, "ON_ATTACK_RESOLVED", {
+    side: k,
+    source: attacker,
+    victimSide: foeKey,
+    victimSlot: target.kind === "card" ? target.slot : undefined,
+  });
+  recomputeAuras(s);
 }
 
 export function endTurn(s: DuelState) {
+  if (s.over) return;
+  const ending = s.turn;
+  emit(s, "ON_END_TURN", { side: ending });
+  tickTurnEnd(s, ending);
+  recomputeAuras(s);
   if (s.over) return;
   const next = other(s.turn);
   s.turn = next;
@@ -394,6 +518,9 @@ export function runAiTurn(s: DuelState) {
   const k: SideKey = "foe";
   const side = s.foe;
 
+  // 0. resolver escolhas pendentes de efeitos da IA
+  aiAutoResolve(s, k);
+
   // 1. jogar a carta de maior custo possível enquanto houver PA e espaço
   let guard = 0;
   while (guard++ < 10) {
@@ -402,20 +529,30 @@ export function runAiTurn(s: DuelState) {
       .sort((a, b) => b.cost - a.cost || b.atk - a.atk)[0];
     if (!playable || side.field.every((f) => f !== null)) break;
     playCard(s, k, playable.uid);
+    aiAutoResolve(s, k);
+    if (s.over) return;
   }
 
   // 2. cada carta pronta escolhe um alvo
   guard = 0;
   while (guard++ < FIELD_SLOTS && !s.over && canAttackThisTurn(s, k)) {
-    const attacker = side.field.find((c) => c && c.ready && !c.attacked);
+    const attacker = side.field.find((c) => c && c.ready && !c.attacked && !blocksAttack(c));
     if (!attacker) break;
     const you = s.you;
-    const guarded = hasGuard(you);
+    const bypassGuard = hasKeyword(attacker, "IGNORE_GUARD") || hasKeyword(attacker, "FLYING");
+    const guarded = hasGuard(you) && !bypassGuard;
+    const targetable = (c: InPlayCard) =>
+      !(isUntargetable(c) && !hasKeyword(attacker, "PIERCE_STEALTH")) &&
+      !(
+        hasKeyword(c, "FLYING") &&
+        !(hasKeyword(attacker, "FLYING") || attacker.type === "Atirador")
+      );
     // prioriza destruir uma carta inimiga que morra com este ataque (a de maior ATK)
     let bestSlot = -1;
     you.field.forEach((c, i) => {
       if (!c) return;
-      if (guarded && c.effect_code !== "GUARD") return;
+      if (guarded && !isGuard(c)) return;
+      if (!targetable(c)) return;
       const lethal = c.ps <= attacker.atk;
       if (!lethal) return;
       if (bestSlot === -1 || c.atk > (you.field[bestSlot]?.atk ?? 0)) bestSlot = i;
@@ -424,11 +561,12 @@ export function runAiTurn(s: DuelState) {
       bestSlot !== -1 && Math.random() < 0.85 ? { kind: "card", slot: bestSlot } : { kind: "player" };
     if (guarded) {
       const guardSlot =
-        bestSlot !== -1
-          ? bestSlot
-          : you.field.findIndex((c) => !!c && c.effect_code === "GUARD");
+        bestSlot !== -1 ? bestSlot : you.field.findIndex((c) => !!c && isGuard(c) && targetable(c));
       if (guardSlot === -1) break;
       target = { kind: "card", slot: guardSlot };
+    } else if (target.kind === "player" && hasGuard(you)) {
+      // sem bypass e com guarda em campo: não pode atacar o jogador
+      break;
     }
     attackWith(s, k, attacker.uid, target);
   }
@@ -436,3 +574,7 @@ export function runAiTurn(s: DuelState) {
   // 3. encerrar turno
   if (!s.over) endTurn(s);
 }
+
+/* ---------------- Effect Engine v2 (atalhos reexportados) ---------------- */
+
+export { resolveChoice } from "@/lib/tcg/effects/engine";

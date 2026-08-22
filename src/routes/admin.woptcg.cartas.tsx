@@ -21,6 +21,7 @@ import { ORGANIZATIONS } from "@/lib/characters/types";
 import { CardCost } from "@/components/tcg/card-cost";
 import { EFFECT_CODES, EFFECT_LABEL, type EffectCode } from "@/lib/tcg/duel";
 import { CardSortSelect, sortCards, type CardSort } from "@/lib/tcg/sort";
+import { CardEffectsEditor } from "@/components/admin/card-effects-editor";
 
 
 export const Route = createFileRoute("/admin/woptcg/cartas")({
@@ -42,6 +43,7 @@ type Draft = {
   type: string;
   organization: string;
   race: string;
+  family: string;
   status: "WAITING" | "ACTIVE";
 };
 
@@ -57,6 +59,7 @@ const EMPTY: Draft = {
   type: TYPES[0],
   organization: ORGANIZATIONS[0],
   race: RACE_LIST[0],
+  family: "",
   status: "WAITING",
 };
 
@@ -145,6 +148,7 @@ export function TcgCardsAdmin() {
       type: c.type || TYPES[0],
       organization: c.organization || ORGANIZATIONS[0],
       race: c.race || RACE_LIST[0],
+      family: c.family ?? "",
       status: c.status || "WAITING",
     });
   }
@@ -351,9 +355,25 @@ export function TcgCardsAdmin() {
                 </div>
               </div>
               <div>
+                <label className="text-[10px] tracking-widest uppercase text-parchment/50">Família (opcional — ex.: Morningstar)</label>
+                <input
+                  className={field}
+                  value={draft.family}
+                  placeholder="Sem família"
+                  onChange={(e) => setDraft({ ...draft, family: e.target.value })}
+                />
+              </div>
+              <div>
                 <label className="text-[10px] tracking-widest uppercase text-parchment/50">Descrição do efeito</label>
                 <textarea rows={3} className={field} value={draft.effect} onChange={(e) => setDraft({ ...draft, effect: e.target.value })} />
               </div>
+              {draft.id ? (
+                <CardEffectsEditor cardId={draft.id} />
+              ) : (
+                <p className="text-[11px] text-parchment/50">
+                  Salve a carta primeiro para configurar os efeitos (Effect Engine v2).
+                </p>
+              )}
 
               <div className="flex items-center gap-3 pt-2">
                 <button

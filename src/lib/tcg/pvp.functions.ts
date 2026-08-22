@@ -7,7 +7,8 @@ type ActionInput = {
     | { type: "PLAY"; uid: string; slot: number }
     | { type: "ATTACK"; uid: string; target: { kind: "player" } | { kind: "card"; slot: number } }
     | { type: "END_TURN" }
-    | { type: "SURRENDER" };
+    | { type: "SURRENDER" }
+    | { type: "RESOLVE_CHOICE"; uid: string; targetUid: string | null };
 };
 
 export const startPvpMatchFn = createServerFn({ method: "POST" })

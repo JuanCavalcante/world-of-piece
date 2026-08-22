@@ -13,6 +13,8 @@ import {
   type InPlayCard,
   type Side,
 } from "@/lib/tcg/duel";
+import { pendingChoiceTargets } from "@/lib/tcg/effects/engine";
+import { hasKeyword, hasStatus } from "@/lib/tcg/effects/status";
 
 const DUEL_BG_URL = "https://i.imgur.com/nj9Nmxx.jpg";
 
@@ -31,6 +33,8 @@ export type DuelBoardProps = {
   onAttack: (uid: string, target: AttackTarget) => void;
   onEndTurn: () => void;
   onSurrender: () => void;
+  /** Resolve a escolha de alvo de um efeito pendente (null = ignorar o efeito). */
+  onResolveChoice?: (targetUid: string | null) => void;
   reward: DuelReward | null;
   onCloseResult: () => void;
   /** Camada extra (ex.: "reconectando..." no PvP). */
@@ -49,6 +53,7 @@ export function DuelBoard({
   onAttack,
   onEndTurn,
   onSurrender,
+  onResolveChoice,
   reward,
   onCloseResult,
   overlay,
@@ -60,6 +65,15 @@ export function DuelBoard({
   const [confirmSurrender, setConfirmSurrender] = useState(false);
 
   const yourTurn = game.turn === "you" && !game.over && canAct;
+
+  // Modo de escolha de alvo de efeito (Effect Engine v2)
+  const choiceMode = !!game.pendingChoice && game.pendingChoice.side === "you" && !game.over && !!onResolveChoice;
+  const choiceUids = new Set(
+    choiceMode ? pendingChoiceTargets(game, "you").map((r) => r.card.uid) : [],
+  );
+  const choiceCard = choiceMode
+    ? game.you.field.find((c) => c?.uid === game.pendingChoice?.cardUid)
+    : null;
 
   const dropToField = (slot: number) => {
     if (!yourTurn || !dragging) return;
@@ -77,6 +91,10 @@ export function DuelBoard({
   const onOwnFieldClick = (slot: number) => {
     const card = game.you.field[slot];
     if (!card) return;
+    if (choiceMode) {
+      if (choiceUids.has(card.uid)) onResolveChoice!(card.uid);
+      return;
+    }
     if (!yourTurn) {
       setZoom(card);
       return;
@@ -93,12 +111,17 @@ export function DuelBoard({
   };
 
   const foeGuarded = hasGuard(game.foe);
-  const canHitPlayer = !!selected && yourTurn && isValidTarget(game, "you", { kind: "player" });
+  const canHitPlayer =
+    !!selected && yourTurn && !choiceMode && isValidTarget(game, "you", { kind: "player" }, selected);
 
   const onFoeFieldClick = (slot: number) => {
     const card = game.foe.field[slot];
     if (!card) return;
-    if (selected && yourTurn && isValidTarget(game, "you", { kind: "card", slot })) {
+    if (choiceMode) {
+      if (choiceUids.has(card.uid)) onResolveChoice!(card.uid);
+      return;
+    }
+    if (selected && yourTurn && isValidTarget(game, "you", { kind: "card", slot }, selected)) {
       resolveAttack({ kind: "card", slot });
     } else setZoom(card);
   };
@@ -148,6 +171,7 @@ export function DuelBoard({
           bannerUrl={foeBannerUrl ?? null}
           highlight={game.fx.target === "foe" && game.fx.kind === "hit"}
           targetable={!!selected && yourTurn}
+          choiceUids={choiceMode ? choiceUids : undefined}
           onFieldClick={onFoeFieldClick}
           onPlayerClick={() => canHitPlayer && resolveAttack({ kind: "player" })}
           onZoom={setZoom}
@@ -160,13 +184,15 @@ export function DuelBoard({
           <span>
             {game.over
               ? "Fim do duelo"
-              : selected && yourTurn
-                ? foeGuarded
-                  ? "Guarda ativa — ataque as cartas de Guarda"
-                  : "Escolha o alvo"
-                : yourTurn
-                  ? "Sua vez"
-                  : "Vez do adversário"}
+              : choiceMode
+                ? `Efeito de ${choiceCard?.name ?? "carta"} — escolha o alvo`
+                : selected && yourTurn
+                  ? foeGuarded
+                    ? "Guarda ativa — ataque as cartas de Guarda"
+                    : "Escolha o alvo"
+                  : yourTurn
+                    ? "Sua vez"
+                    : "Vez do adversário"}
           </span>
         </div>
 
@@ -177,6 +203,7 @@ export function DuelBoard({
           highlight={game.fx.target === "you" && game.fx.kind === "hit"}
           selectedUid={selected}
           bannerUrl={myBannerUrl ?? null}
+          choiceUids={choiceMode ? choiceUids : undefined}
           onZoom={setZoom}
           onFieldDrop={dropToField}
           onFieldClick={onOwnFieldClick}
@@ -220,6 +247,14 @@ export function DuelBoard({
 
         {/* Painel de ações */}
         <div className="absolute bottom-3 right-3 z-30 flex flex-col gap-2 rounded-2xl border border-gold/20 bg-black/70 backdrop-blur p-2.5">
+          {choiceMode && (
+            <button
+              onClick={() => onResolveChoice!(null)}
+              className="px-3 py-2 rounded-lg border border-sky-400/50 text-sky-300 text-[10px] tracking-widest uppercase hover:bg-sky-400/10"
+            >
+              Ignorar efeito
+            </button>
+          )}
           {selected && yourTurn && (
             <button
               onClick={() => setSelected(null)}
@@ -403,6 +438,7 @@ function BoardSide({
   targetable,
   selectedUid,
   bannerUrl,
+  choiceUids,
   onZoom,
   onFieldDrop,
   onFieldClick,
@@ -416,6 +452,7 @@ function BoardSide({
   targetable?: boolean;
   selectedUid?: string | null;
   bannerUrl?: string | null;
+  choiceUids?: Set<string>;
   onZoom?: (c: InPlayCard) => void;
   onFieldDrop?: (slot: number) => void;
   onFieldClick?: (slot: number) => void;
@@ -478,6 +515,7 @@ function BoardSide({
               c && rarityStyle(c.rarity),
               c && selectedUid === c.uid && "ring-2 ring-gold",
               c && targetable && "ring-2 ring-wop-red/70 animate-pulse",
+              c && choiceUids?.has(c.uid) && "ring-2 ring-emerald-400 animate-pulse",
               c && !targetable && !opponent && c.attacked && "opacity-60",
             )}
           >
@@ -499,12 +537,37 @@ function SlotLabel({ label }: { label: string }) {
 
 function MiniCard({ card, large }: { card: InPlayCard; large?: boolean }) {
   const pct = Math.max(0, Math.round((card.ps / card.maxPs) * 100));
+  const badges: { icon: string; label: string }[] = [];
+  if (hasKeyword(card, "GUARD") || card.effect_code === "GUARD") badges.push({ icon: "🛡", label: "Guarda" });
+  if (hasKeyword(card, "FLYING")) badges.push({ icon: "🕊", label: "Vôo" });
+  if (hasKeyword(card, "RUSH") || hasStatus(card, "RUSH")) badges.push({ icon: "⚡", label: "Ímpeto" });
+  if (hasStatus(card, "STEALTH") || hasStatus(card, "STEALTH_TEMP") || hasStatus(card, "STEALTH_UNTIL_ATTACK"))
+    badges.push({ icon: "👁", label: "Furtividade" });
+  if (hasStatus(card, "LAZY")) badges.push({ icon: "💤", label: "Preguiça" });
+  if (hasStatus(card, "SLEEP")) badges.push({ icon: "🌙", label: "Sono" });
+  if (hasStatus(card, "POISON")) badges.push({ icon: "☠", label: "Envenenamento" });
   return (
     <div className="size-full relative" title={card.name}>
       {card.image_url ? (
         <img src={card.image_url} alt={card.name} className="size-full object-cover" />
       ) : (
         <div className="size-full bg-sea-deep/70" />
+      )}
+      {badges.length > 0 && (
+        <div className="absolute top-1 left-1 flex flex-col gap-0.5">
+          {badges.map((b) => (
+            <span
+              key={b.label}
+              title={b.label}
+              className={cn(
+                "grid place-items-center rounded-full bg-black/70 border border-gold/40",
+                large ? "size-6 text-[11px]" : "size-4 text-[8px]",
+              )}
+            >
+              {b.icon}
+            </span>
+          ))}
+        </div>
       )}
       <span
         className={cn(

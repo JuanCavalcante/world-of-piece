@@ -1,6 +1,7 @@
 import { supabase } from "@/lib/supabase";
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
+import type { Ability } from "@/lib/tcg/effects/types";
 
 export type Rarity = "COMUM" | "INCOMUM" | "RARA" | "EPICA" | "LENDARIA";
 
@@ -36,8 +37,11 @@ export type TcgCard = {
   type: string | null;
   organization: string | null;
   race: string | null;
+  family?: string | null;
   status: "WAITING" | "ACTIVE";
   created_at?: string;
+  /** Effect Engine v2: habilidades associadas (preenchido via attachCardAbilities). */
+  abilities?: Ability[];
 };
 
 export type TcgPlayer = {
@@ -288,6 +292,7 @@ export async function adminSaveCard(card: Partial<TcgCard> & { name: string }) {
     type: card.type || null,
     organization: card.organization || null,
     race: card.race || null,
+    family: card.family || null,
     status: card.status || "WAITING"
   };
 
@@ -472,4 +477,109 @@ export async function getPlayerCosmetics(userId: string): Promise<TcgPublicCosme
     .maybeSingle();
   if (error) throw error;
   return (data as unknown as TcgPublicCosmetics) ?? null;
+}
+
+/* ---------- Effect Engine v2: catálogo e associações ---------- */
+
+export type TcgEffect = {
+  id: string;
+  effect_key: string;
+  name: string;
+  description: string;
+  category: string;
+  default_trigger: string;
+  allowed_triggers: string[];
+  allowed_targets: string[];
+  params_schema: Record<string, { type: string; label?: string; options?: string[]; default?: unknown; min?: number; max?: number }>;
+  active: boolean;
+  sort_order: number;
+};
+
+export type TcgCardEffectRow = {
+  id?: string;
+  card_id: string;
+  slot: number;
+  effect_id: string;
+  trigger_code: string | null;
+  target_mode: string | null;
+  condition_type: string;
+  condition_value: string | null;
+  params: Record<string, unknown>;
+};
+
+export async function listEffectsCatalog(): Promise<TcgEffect[]> {
+  const { data, error } = await (supabase.from("effects" as never) as any)
+    .select("*")
+    .eq("active", true)
+    .order("sort_order", { ascending: true });
+  if (error) throw error;
+  return (data ?? []) as TcgEffect[];
+}
+
+export async function listCardEffects(cardId: string): Promise<TcgCardEffectRow[]> {
+  const { data, error } = await (supabase.from("card_effects" as never) as any)
+    .select("*")
+    .eq("card_id", cardId)
+    .order("slot", { ascending: true });
+  if (error) throw error;
+  return (data ?? []) as TcgCardEffectRow[];
+}
+
+/** Substitui as associações de efeito de uma carta (slots 1-3). */
+export async function adminSaveCardEffects(cardId: string, rows: Omit<TcgCardEffectRow, "card_id">[]) {
+  const clean = rows.filter((r) => r.effect_id).slice(0, 3);
+  const { error: delErr } = await (supabase.from("card_effects" as never) as any)
+    .delete()
+    .eq("card_id", cardId);
+  if (delErr) throw delErr;
+  if (!clean.length) return;
+  const payload = clean.map((r, i) => ({
+    card_id: cardId,
+    slot: i + 1,
+    effect_id: r.effect_id,
+    trigger_code: r.trigger_code || null,
+    target_mode: r.target_mode || null,
+    condition_type: r.condition_type || "NONE",
+    condition_value: r.condition_value || null,
+    params: r.params ?? {},
+  }));
+  const { error } = await (supabase.from("card_effects" as never) as any).insert(payload);
+  if (error) throw error;
+}
+
+type CardEffectJoined = TcgCardEffectRow & { effects: TcgEffect | null };
+
+function rowToAbility(row: CardEffectJoined): Ability | null {
+  const eff = row.effects;
+  if (!eff) return null;
+  return {
+    effectKey: eff.effect_key,
+    name: eff.name,
+    trigger: (row.trigger_code || eff.default_trigger) as Ability["trigger"],
+    target: (row.target_mode || eff.allowed_targets?.[0] || "SELF") as Ability["target"],
+    condition: { type: row.condition_type || "NONE", value: row.condition_value ?? null },
+    params: row.params ?? {},
+    slot: row.slot,
+  };
+}
+
+/** Busca as habilidades de várias cartas e as anexa como `card.abilities`. */
+export async function attachCardAbilities<T extends TcgCard>(cards: T[]): Promise<T[]> {
+  const ids = Array.from(new Set(cards.map((c) => c.id)));
+  if (!ids.length) return cards;
+  const { data, error } = await (supabase.from("card_effects" as never) as any)
+    .select("*, effects(*)")
+    .in("card_id", ids)
+    .eq("active", true)
+    .order("slot", { ascending: true });
+  if (error) throw error;
+  const byCard = new Map<string, Ability[]>();
+  ((data ?? []) as CardEffectJoined[]).forEach((row) => {
+    const ability = rowToAbility(row);
+    if (!ability) return;
+    const list = byCard.get(row.card_id) ?? [];
+    list.push(ability);
+    byCard.set(row.card_id, list);
+  });
+  return cards.map((c) => ({ ...c, abilities: byCard.get(c.id) ?? [] }));
 }

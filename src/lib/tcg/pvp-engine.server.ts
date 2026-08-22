@@ -4,18 +4,22 @@ import {
   createPvpDuel,
   endTurn,
   playCard,
+  resolveChoice,
   surrender,
   type AttackTarget,
   type DuelState,
   type SideKey,
 } from "@/lib/tcg/duel";
+import { normalizeState } from "@/lib/tcg/effects/engine";
+import type { Ability } from "@/lib/tcg/effects/types";
 import type { TcgCard } from "@/lib/tcg/api";
 
 export type PvpAction =
   | { type: "PLAY"; uid: string; slot: number }
   | { type: "ATTACK"; uid: string; target: AttackTarget }
   | { type: "END_TURN" }
-  | { type: "SURRENDER" };
+  | { type: "SURRENDER" }
+  | { type: "RESOLVE_CHOICE"; uid: string; targetUid: string | null };
 
 type MatchRow = {
   id: string;
@@ -66,6 +70,29 @@ async function loadCards(db: SupabaseClient, ids: string[]): Promise<Map<string,
   const { data, error } = await db.from("cards").select("*").in("id", ids);
   if (error) throw new Error(error.message);
   (data ?? []).forEach((c) => map.set(String(c.id), c as unknown as TcgCard));
+
+  // Effect Engine v2: anexa as habilidades associadas às cartas
+  const { data: ce } = await db
+    .from("card_effects")
+    .select("*, effects(*)")
+    .in("card_id", ids)
+    .eq("active", true)
+    .order("slot", { ascending: true });
+  (ce ?? []).forEach((row: Record<string, any>) => {
+    const card = map.get(String(row.card_id));
+    const eff = row.effects as Record<string, any> | null;
+    if (!card || !eff) return;
+    const ability: Ability = {
+      effectKey: String(eff.effect_key),
+      name: String(eff.name),
+      trigger: (row.trigger_code || eff.default_trigger) as Ability["trigger"],
+      target: (row.target_mode || (eff.allowed_targets as string[])?.[0] || "SELF") as Ability["target"],
+      condition: { type: String(row.condition_type || "NONE"), value: row.condition_value ?? null },
+      params: (row.params as Record<string, unknown>) ?? {},
+      slot: Number(row.slot),
+    };
+    card.abilities = [...(card.abilities ?? []), ability];
+  });
   return map;
 }
 
@@ -149,7 +176,7 @@ export async function submitPvpAction(matchId: string, userId: string, action: P
   if (!row.state) throw new Error("Partida ainda não iniciada.");
   if (row.status !== "ACTIVE" && row.status !== "PREPARING") throw new Error("Partida encerrada.");
 
-  const state = structuredClone(row.state) as DuelState;
+  const state = normalizeState(structuredClone(row.state) as DuelState);
   if (state.over) throw new Error("Partida encerrada.");
 
   if (action.type !== "SURRENDER" && state.turn !== me) throw new Error("Não é o seu turno.");
@@ -178,6 +205,11 @@ export async function submitPvpAction(matchId: string, userId: string, action: P
     case "END_TURN":
       endTurn(state);
       break;
+    case "RESOLVE_CHOICE": {
+      const ok = resolveChoice(state, me, action.targetUid ?? null);
+      if (!ok) throw new Error("Nenhuma escolha pendente para resolver.");
+      break;
+    }
     case "SURRENDER":
       surrender(state, me);
       break;
