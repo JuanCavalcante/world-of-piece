@@ -171,6 +171,7 @@ export function DuelBoard({
           bannerUrl={foeBannerUrl ?? null}
           highlight={game.fx.target === "foe" && game.fx.kind === "hit"}
           targetable={!!selected && yourTurn}
+          choiceUids={choiceMode ? choiceUids : undefined}
           onFieldClick={onFoeFieldClick}
           onPlayerClick={() => canHitPlayer && resolveAttack({ kind: "player" })}
           onZoom={setZoom}
@@ -183,13 +184,15 @@ export function DuelBoard({
           <span>
             {game.over
               ? "Fim do duelo"
-              : selected && yourTurn
-                ? foeGuarded
-                  ? "Guarda ativa — ataque as cartas de Guarda"
-                  : "Escolha o alvo"
-                : yourTurn
-                  ? "Sua vez"
-                  : "Vez do adversário"}
+              : choiceMode
+                ? `Efeito de ${choiceCard?.name ?? "carta"} — escolha o alvo`
+                : selected && yourTurn
+                  ? foeGuarded
+                    ? "Guarda ativa — ataque as cartas de Guarda"
+                    : "Escolha o alvo"
+                  : yourTurn
+                    ? "Sua vez"
+                    : "Vez do adversário"}
           </span>
         </div>
 
@@ -200,6 +203,7 @@ export function DuelBoard({
           highlight={game.fx.target === "you" && game.fx.kind === "hit"}
           selectedUid={selected}
           bannerUrl={myBannerUrl ?? null}
+          choiceUids={choiceMode ? choiceUids : undefined}
           onZoom={setZoom}
           onFieldDrop={dropToField}
           onFieldClick={onOwnFieldClick}
@@ -243,6 +247,14 @@ export function DuelBoard({
 
         {/* Painel de ações */}
         <div className="absolute bottom-3 right-3 z-30 flex flex-col gap-2 rounded-2xl border border-gold/20 bg-black/70 backdrop-blur p-2.5">
+          {choiceMode && (
+            <button
+              onClick={() => onResolveChoice!(null)}
+              className="px-3 py-2 rounded-lg border border-sky-400/50 text-sky-300 text-[10px] tracking-widest uppercase hover:bg-sky-400/10"
+            >
+              Ignorar efeito
+            </button>
+          )}
           {selected && yourTurn && (
             <button
               onClick={() => setSelected(null)}
@@ -439,6 +451,7 @@ function BoardSide({
   targetable?: boolean;
   selectedUid?: string | null;
   bannerUrl?: string | null;
+  choiceUids?: Set<string>;
   onZoom?: (c: InPlayCard) => void;
   onFieldDrop?: (slot: number) => void;
   onFieldClick?: (slot: number) => void;
