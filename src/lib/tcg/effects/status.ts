@@ -38,7 +38,8 @@ export function addStatus(
     existing.amount = amount;
     return;
   }
-  card.statuses.push({ key, duration, appliedTurn: turnCount, turnsLeft: null, amount });
+  const turnsLeft = duration === "N_TURNS" ? Math.max(1, amount || 1) : null;
+  card.statuses.push({ key, duration, appliedTurn: turnCount, turnsLeft, amount });
 }
 
 export function addKeyword(
