@@ -305,9 +305,9 @@ export function playCard(s: DuelState, k: SideKey, cardUid: string, slot?: numbe
   card.ready = card.effect_code === "SWAP_WITH_DEFENSE";
   side.field[target] = card;
   pushLog(s, k, `${side.name} jogou ${card.name} (${card.cost} MP) no Campo.`);
+  // Effect Engine v2: auras/keywords de TODAS as cartas são recalculadas a cada entrada.
+  recomputeAuras(s);
   if (card.abilities.length) {
-    // Effect Engine v2: keywords base/condicionais, Ímpeto e gatilhos ON_PLAY.
-    recomputeAuras(s);
     if (hasKeyword(card, "RUSH")) card.ready = true;
     playAbilities(s, k, card);
     if (hasKeyword(card, "RUSH")) card.ready = true;
@@ -417,15 +417,8 @@ export function attackWith(s: DuelState, k: SideKey, cardUid: string, target: At
     pushLog(s, k, `${attacker.name} não pode atacar agora.`);
     return;
   }
-  if (!isValidTarget(s, k, target, cardUid)) {
-    pushLog(s, k, `Alvo inválido para este ataque.`);
-    return;
-  }
-  attacker.attacked = true;
-  side.attacksUsed += 1;
-  s.fx = { target: foeKey, kind: "attack", stamp: Date.now() };
-
-  // Gatilhos de declaração (ex.: Corte Silencioso, Dano em Área)
+  // Gatilhos de declaração ANTES da validação de alvo (ex.: Corte Silencioso
+  // concede Fura-Guarta neste ataque; Dano em Área pode abrir escolha de alvo).
   emit(s, "ON_ATTACK_DECLARED", {
     side: k,
     source: attacker,
@@ -434,6 +427,13 @@ export function attackWith(s: DuelState, k: SideKey, cardUid: string, target: At
   });
   recomputeAuras(s);
   if (s.over) return;
+  if (!isValidTarget(s, k, target, cardUid)) {
+    pushLog(s, k, `Alvo inválido para este ataque.`);
+    return;
+  }
+  attacker.attacked = true;
+  side.attacksUsed += 1;
+  s.fx = { target: foeKey, kind: "attack", stamp: Date.now() };
 
   // Atacar quebra a Furtividade "até atacar".
   removeStatus(attacker, "STEALTH_UNTIL_ATTACK");
