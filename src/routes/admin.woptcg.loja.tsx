@@ -1,8 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { useDevPanel } from "@/hooks/use-dev";
-import { AccessDenied } from "./admin.woptcg";
+import { useDevPanel } from "@/lib/admin/base";
 import {
   listShopProducts,
   adminSaveShopProduct,
@@ -70,14 +69,14 @@ function fromLocalInput(v: string): string | null {
 }
 
 export function LojaAdmin() {
-  const { isDev, devReady } = useDevPanel();
+  const isDev = useDevPanel();
   const queryClient = useQueryClient();
   const [editing, setEditing] = useState<DraftState | null>(null);
 
   const productsQuery = useQuery({
     queryKey: ["tcg-shop-admin"],
     queryFn: listShopProducts,
-    enabled: devReady && isDev,
+    enabled: isDev,
   });
 
   const invalidate = () => {
@@ -128,8 +127,13 @@ export function LojaAdmin() {
       }),
   });
 
-  if (!devReady) return <div className="p-6 text-sm text-muted-foreground">Carregando...</div>;
-  if (!isDev) return <AccessDenied />;
+  if (!isDev) {
+    return (
+      <p className="text-sm text-parchment/60">
+        Área restrita ao painel de desenvolvedor.
+      </p>
+    );
+  }
 
   const products = productsQuery.data ?? [];
 

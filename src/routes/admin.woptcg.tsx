@@ -1,5 +1,5 @@
 import { createFileRoute, Link, Outlet, useRouterState } from "@tanstack/react-router";
-import { Users, Layers, Image as ImageIcon } from "lucide-react";
+import { Users, Layers, Image as ImageIcon, ShoppingBag } from "lucide-react";
 import { AdminLink, useAdminBase, useDevPanel } from "@/lib/admin/base";
 
 export const Route = createFileRoute("/admin/woptcg")({
@@ -17,7 +17,11 @@ export function WopTcgAdminLayout() {
   const base = useAdminBase();
   const isDev = useDevPanel();
   const items = isDev
-    ? [...ITEMS, { to: "/woptcg/bannerduelo", label: "Banners", icon: ImageIcon } as const]
+    ? [
+        ...ITEMS,
+        { to: "/woptcg/bannerduelo", label: "Banners", icon: ImageIcon } as const,
+        { to: "/woptcg/loja", label: "Loja", icon: ShoppingBag } as const,
+      ]
     : ITEMS;
   return (
     <div>
