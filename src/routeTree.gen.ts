@@ -9,79 +9,71 @@
 // Additionally, you should also exclude this file from your linter and/or formatter to prevent it from being checked or modified.
 
 import { Route as rootRouteImport } from './routes/__root'
-import { Route as TcggameRouteImport } from './routes/tcggame'
-import { Route as EntrarRouteImport } from './routes/entrar'
-import { Route as CadastroRouteImport } from './routes/cadastro'
-import { Route as AdmindevRouteImport } from './routes/admindev'
-import { Route as AdminRouteImport } from './routes/admin'
-import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
 import { Route as IndexRouteImport } from './routes/index'
-import { Route as TcggameIndexRouteImport } from './routes/tcggame.index'
-import { Route as AdmindevIndexRouteImport } from './routes/admindev.index'
-import { Route as AdminIndexRouteImport } from './routes/admin.index'
-import { Route as TcggameTradeRouteImport } from './routes/tcggame.trade'
-import { Route as TcggameRankingRouteImport } from './routes/tcggame.ranking'
-import { Route as TcggameRankRouteImport } from './routes/tcggame.rank'
-import { Route as TcggameProfile_Char123nameChar125RouteImport } from './routes/tcggame.profile_{$name}'
-import { Route as TcggameDuelsRouteImport } from './routes/tcggame.duels'
-import { Route as TcggameDecksRouteImport } from './routes/tcggame.decks'
-import { Route as TcggameDailyRouteImport } from './routes/tcggame.daily'
-import { Route as TcggameCraftRouteImport } from './routes/tcggame.craft'
-import { Route as TcggameCardsRouteImport } from './routes/tcggame.cards'
-import { Route as TcggameAchievementsRouteImport } from './routes/tcggame.achievements'
-import { Route as AdmindevWoptcgRouteImport } from './routes/admindev.woptcg'
-import { Route as AdmindevRequestsRouteImport } from './routes/admindev.requests'
-import { Route as AdmindevItemsRouteImport } from './routes/admindev.items'
-import { Route as AdminWoptcgRouteImport } from './routes/admin.woptcg'
-import { Route as AdminRequestsRouteImport } from './routes/admin.requests'
-import { Route as AdminItemsRouteImport } from './routes/admin.items'
-import { Route as AuthenticatedTripulacaoRouteImport } from './routes/_authenticated/tripulacao'
-import { Route as AuthenticatedPetsRouteImport } from './routes/_authenticated/pets'
-import { Route as AuthenticatedNavioRouteImport } from './routes/_authenticated/navio'
-import { Route as AuthenticatedEstoqueRouteImport } from './routes/_authenticated/estoque'
+import { Route as AuthenticatedRouteImport } from './routes/_authenticated'
+import { Route as AdminRouteImport } from './routes/admin'
+import { Route as AdmindevRouteImport } from './routes/admindev'
+import { Route as CadastroRouteImport } from './routes/cadastro'
+import { Route as EntrarRouteImport } from './routes/entrar'
+import { Route as TcggameRouteImport } from './routes/tcggame'
 import { Route as AuthenticatedDashboardRouteImport } from './routes/_authenticated/dashboard'
-import { Route as AdmindevWoptcgIndexRouteImport } from './routes/admindev.woptcg.index'
-import { Route as AdmindevNpcsIndexRouteImport } from './routes/admindev.npcs.index'
-import { Route as AdmindevCrewsIndexRouteImport } from './routes/admindev.crews.index'
-import { Route as AdminWoptcgIndexRouteImport } from './routes/admin.woptcg.index'
-import { Route as AdminNpcsIndexRouteImport } from './routes/admin.npcs.index'
-import { Route as AdminCrewsIndexRouteImport } from './routes/admin.crews.index'
+import { Route as AuthenticatedEstoqueRouteImport } from './routes/_authenticated/estoque'
+import { Route as AuthenticatedNavioRouteImport } from './routes/_authenticated/navio'
+import { Route as AuthenticatedPetsRouteImport } from './routes/_authenticated/pets'
+import { Route as AuthenticatedTripulacaoRouteImport } from './routes/_authenticated/tripulacao'
+import { Route as AdminIndexRouteImport } from './routes/admin.index'
+import { Route as AdminItemsRouteImport } from './routes/admin.items'
+import { Route as AdminRequestsRouteImport } from './routes/admin.requests'
+import { Route as AdminWoptcgRouteImport } from './routes/admin.woptcg'
+import { Route as AdmindevIndexRouteImport } from './routes/admindev.index'
+import { Route as AdmindevItemsRouteImport } from './routes/admindev.items'
+import { Route as AdmindevRequestsRouteImport } from './routes/admindev.requests'
+import { Route as AdmindevWoptcgRouteImport } from './routes/admindev.woptcg'
+import { Route as TcggameIndexRouteImport } from './routes/tcggame.index'
+import { Route as TcggameAchievementsRouteImport } from './routes/tcggame.achievements'
+import { Route as TcggameCardsRouteImport } from './routes/tcggame.cards'
+import { Route as TcggameCraftRouteImport } from './routes/tcggame.craft'
+import { Route as TcggameDailyRouteImport } from './routes/tcggame.daily'
+import { Route as TcggameDecksRouteImport } from './routes/tcggame.decks'
+import { Route as TcggameDuelsRouteImport } from './routes/tcggame.duels'
+import { Route as TcggameProfile_Char123nameChar125RouteImport } from './routes/tcggame.profile_{$name}'
+import { Route as TcggameRankRouteImport } from './routes/tcggame.rank'
+import { Route as TcggameRankingRouteImport } from './routes/tcggame.ranking'
+import { Route as TcggameShopRouteImport } from './routes/tcggame.shop'
+import { Route as TcggameTradeRouteImport } from './routes/tcggame.trade'
 import { Route as AuthenticatedPersonagensIndexRouteImport } from './routes/_authenticated/personagens.index'
-import { Route as TcggameProfileNicknameRouteImport } from './routes/tcggame.profile.$nickname'
-import { Route as AdmindevWoptcgJogadoresRouteImport } from './routes/admindev.woptcg.jogadores'
-import { Route as AdmindevWoptcgCartasRouteImport } from './routes/admindev.woptcg.cartas'
-import { Route as AdmindevWoptcgBannerdueloRouteImport } from './routes/admindev.woptcg.bannerduelo'
-import { Route as AdmindevPlayersIdRouteImport } from './routes/admindev.players.$id'
-import { Route as AdmindevNpcsIdRouteImport } from './routes/admindev.npcs.$id'
-import { Route as AdmindevCrewsIdRouteImport } from './routes/admindev.crews.$id'
-import { Route as AdminWoptcgJogadoresRouteImport } from './routes/admin.woptcg.jogadores'
-import { Route as AdminWoptcgCartasRouteImport } from './routes/admin.woptcg.cartas'
-import { Route as AdminWoptcgBannerdueloRouteImport } from './routes/admin.woptcg.bannerduelo'
-import { Route as AdminPlayersIdRouteImport } from './routes/admin.players.$id'
-import { Route as AdminNpcsIdRouteImport } from './routes/admin.npcs.$id'
-import { Route as AdminCrewsIdRouteImport } from './routes/admin.crews.$id'
 import { Route as AuthenticatedPersonagensIdRouteImport } from './routes/_authenticated/personagens.$id'
-import { Route as AdmindevWoptcgJogadorUserIdRouteImport } from './routes/admindev.woptcg.jogador.$userId'
+import { Route as AdminCrewsIndexRouteImport } from './routes/admin.crews.index'
+import { Route as AdminCrewsIdRouteImport } from './routes/admin.crews.$id'
+import { Route as AdminNpcsIndexRouteImport } from './routes/admin.npcs.index'
+import { Route as AdminNpcsIdRouteImport } from './routes/admin.npcs.$id'
+import { Route as AdminPlayersIdRouteImport } from './routes/admin.players.$id'
+import { Route as AdminWoptcgIndexRouteImport } from './routes/admin.woptcg.index'
+import { Route as AdminWoptcgBannerdueloRouteImport } from './routes/admin.woptcg.bannerduelo'
+import { Route as AdminWoptcgCartasRouteImport } from './routes/admin.woptcg.cartas'
+import { Route as AdminWoptcgJogadoresRouteImport } from './routes/admin.woptcg.jogadores'
+import { Route as AdminWoptcgLojaRouteImport } from './routes/admin.woptcg.loja'
+import { Route as AdmindevCrewsIndexRouteImport } from './routes/admindev.crews.index'
+import { Route as AdmindevCrewsIdRouteImport } from './routes/admindev.crews.$id'
+import { Route as AdmindevNpcsIndexRouteImport } from './routes/admindev.npcs.index'
+import { Route as AdmindevNpcsIdRouteImport } from './routes/admindev.npcs.$id'
+import { Route as AdmindevPlayersIdRouteImport } from './routes/admindev.players.$id'
+import { Route as AdmindevWoptcgIndexRouteImport } from './routes/admindev.woptcg.index'
+import { Route as AdmindevWoptcgBannerdueloRouteImport } from './routes/admindev.woptcg.bannerduelo'
+import { Route as AdmindevWoptcgCartasRouteImport } from './routes/admindev.woptcg.cartas'
+import { Route as AdmindevWoptcgJogadoresRouteImport } from './routes/admindev.woptcg.jogadores'
+import { Route as AdmindevWoptcgLojaRouteImport } from './routes/admindev.woptcg.loja'
+import { Route as TcggameProfileNicknameRouteImport } from './routes/tcggame.profile.$nickname'
 import { Route as AdminWoptcgJogadorUserIdRouteImport } from './routes/admin.woptcg.jogador.$userId'
+import { Route as AdmindevWoptcgJogadorUserIdRouteImport } from './routes/admindev.woptcg.jogador.$userId'
 
-const TcggameRoute = TcggameRouteImport.update({
-  id: '/tcggame',
-  path: '/tcggame',
+const IndexRoute = IndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
-const EntrarRoute = EntrarRouteImport.update({
-  id: '/entrar',
-  path: '/entrar',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const CadastroRoute = CadastroRouteImport.update({
-  id: '/cadastro',
-  path: '/cadastro',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AdmindevRoute = AdmindevRouteImport.update({
-  id: '/admindev',
-  path: '/admindev',
+const AuthenticatedRoute = AuthenticatedRouteImport.update({
+  id: '/_authenticated',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AdminRoute = AdminRouteImport.update({
@@ -89,43 +81,124 @@ const AdminRoute = AdminRouteImport.update({
   path: '/admin',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AuthenticatedRoute = AuthenticatedRouteImport.update({
-  id: '/_authenticated',
+const AdmindevRoute = AdmindevRouteImport.update({
+  id: '/admindev',
+  path: '/admindev',
   getParentRoute: () => rootRouteImport,
 } as any)
-const IndexRoute = IndexRouteImport.update({
-  id: '/',
-  path: '/',
+const CadastroRoute = CadastroRouteImport.update({
+  id: '/cadastro',
+  path: '/cadastro',
   getParentRoute: () => rootRouteImport,
 } as any)
-const TcggameIndexRoute = TcggameIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => TcggameRoute,
+const EntrarRoute = EntrarRouteImport.update({
+  id: '/entrar',
+  path: '/entrar',
+  getParentRoute: () => rootRouteImport,
 } as any)
-const AdmindevIndexRoute = AdmindevIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => AdmindevRoute,
+const TcggameRoute = TcggameRouteImport.update({
+  id: '/tcggame',
+  path: '/tcggame',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
+  id: '/dashboard',
+  path: '/dashboard',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedEstoqueRoute = AuthenticatedEstoqueRouteImport.update({
+  id: '/estoque',
+  path: '/estoque',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedNavioRoute = AuthenticatedNavioRouteImport.update({
+  id: '/navio',
+  path: '/navio',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedPetsRoute = AuthenticatedPetsRouteImport.update({
+  id: '/pets',
+  path: '/pets',
+  getParentRoute: () => AuthenticatedRoute,
+} as any)
+const AuthenticatedTripulacaoRoute = AuthenticatedTripulacaoRouteImport.update({
+  id: '/tripulacao',
+  path: '/tripulacao',
+  getParentRoute: () => AuthenticatedRoute,
 } as any)
 const AdminIndexRoute = AdminIndexRouteImport.update({
   id: '/',
   path: '/',
   getParentRoute: () => AdminRoute,
 } as any)
-const TcggameTradeRoute = TcggameTradeRouteImport.update({
-  id: '/trade',
-  path: '/trade',
+const AdminItemsRoute = AdminItemsRouteImport.update({
+  id: '/items',
+  path: '/items',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminRequestsRoute = AdminRequestsRouteImport.update({
+  id: '/requests',
+  path: '/requests',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminWoptcgRoute = AdminWoptcgRouteImport.update({
+  id: '/woptcg',
+  path: '/woptcg',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdmindevIndexRoute = AdmindevIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdmindevRoute,
+} as any)
+const AdmindevItemsRoute = AdmindevItemsRouteImport.update({
+  id: '/items',
+  path: '/items',
+  getParentRoute: () => AdmindevRoute,
+} as any)
+const AdmindevRequestsRoute = AdmindevRequestsRouteImport.update({
+  id: '/requests',
+  path: '/requests',
+  getParentRoute: () => AdmindevRoute,
+} as any)
+const AdmindevWoptcgRoute = AdmindevWoptcgRouteImport.update({
+  id: '/woptcg',
+  path: '/woptcg',
+  getParentRoute: () => AdmindevRoute,
+} as any)
+const TcggameIndexRoute = TcggameIndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => TcggameRoute,
 } as any)
-const TcggameRankingRoute = TcggameRankingRouteImport.update({
-  id: '/ranking',
-  path: '/ranking',
+const TcggameAchievementsRoute = TcggameAchievementsRouteImport.update({
+  id: '/achievements',
+  path: '/achievements',
   getParentRoute: () => TcggameRoute,
 } as any)
-const TcggameRankRoute = TcggameRankRouteImport.update({
-  id: '/rank',
-  path: '/rank',
+const TcggameCardsRoute = TcggameCardsRouteImport.update({
+  id: '/cards',
+  path: '/cards',
+  getParentRoute: () => TcggameRoute,
+} as any)
+const TcggameCraftRoute = TcggameCraftRouteImport.update({
+  id: '/craft',
+  path: '/craft',
+  getParentRoute: () => TcggameRoute,
+} as any)
+const TcggameDailyRoute = TcggameDailyRouteImport.update({
+  id: '/daily',
+  path: '/daily',
+  getParentRoute: () => TcggameRoute,
+} as any)
+const TcggameDecksRoute = TcggameDecksRouteImport.update({
+  id: '/decks',
+  path: '/decks',
+  getParentRoute: () => TcggameRoute,
+} as any)
+const TcggameDuelsRoute = TcggameDuelsRouteImport.update({
+  id: '/duels',
+  path: '/duels',
   getParentRoute: () => TcggameRoute,
 } as any)
 const TcggameProfile_Char123nameChar125Route =
@@ -134,120 +207,25 @@ const TcggameProfile_Char123nameChar125Route =
     path: '/profile_{$name}',
     getParentRoute: () => TcggameRoute,
   } as any)
-const TcggameDuelsRoute = TcggameDuelsRouteImport.update({
-  id: '/duels',
-  path: '/duels',
+const TcggameRankRoute = TcggameRankRouteImport.update({
+  id: '/rank',
+  path: '/rank',
   getParentRoute: () => TcggameRoute,
 } as any)
-const TcggameDecksRoute = TcggameDecksRouteImport.update({
-  id: '/decks',
-  path: '/decks',
+const TcggameRankingRoute = TcggameRankingRouteImport.update({
+  id: '/ranking',
+  path: '/ranking',
   getParentRoute: () => TcggameRoute,
 } as any)
-const TcggameDailyRoute = TcggameDailyRouteImport.update({
-  id: '/daily',
-  path: '/daily',
+const TcggameShopRoute = TcggameShopRouteImport.update({
+  id: '/shop',
+  path: '/shop',
   getParentRoute: () => TcggameRoute,
 } as any)
-const TcggameCraftRoute = TcggameCraftRouteImport.update({
-  id: '/craft',
-  path: '/craft',
+const TcggameTradeRoute = TcggameTradeRouteImport.update({
+  id: '/trade',
+  path: '/trade',
   getParentRoute: () => TcggameRoute,
-} as any)
-const TcggameCardsRoute = TcggameCardsRouteImport.update({
-  id: '/cards',
-  path: '/cards',
-  getParentRoute: () => TcggameRoute,
-} as any)
-const TcggameAchievementsRoute = TcggameAchievementsRouteImport.update({
-  id: '/achievements',
-  path: '/achievements',
-  getParentRoute: () => TcggameRoute,
-} as any)
-const AdmindevWoptcgRoute = AdmindevWoptcgRouteImport.update({
-  id: '/woptcg',
-  path: '/woptcg',
-  getParentRoute: () => AdmindevRoute,
-} as any)
-const AdmindevRequestsRoute = AdmindevRequestsRouteImport.update({
-  id: '/requests',
-  path: '/requests',
-  getParentRoute: () => AdmindevRoute,
-} as any)
-const AdmindevItemsRoute = AdmindevItemsRouteImport.update({
-  id: '/items',
-  path: '/items',
-  getParentRoute: () => AdmindevRoute,
-} as any)
-const AdminWoptcgRoute = AdminWoptcgRouteImport.update({
-  id: '/woptcg',
-  path: '/woptcg',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminRequestsRoute = AdminRequestsRouteImport.update({
-  id: '/requests',
-  path: '/requests',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminItemsRoute = AdminItemsRouteImport.update({
-  id: '/items',
-  path: '/items',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AuthenticatedTripulacaoRoute = AuthenticatedTripulacaoRouteImport.update({
-  id: '/tripulacao',
-  path: '/tripulacao',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
-const AuthenticatedPetsRoute = AuthenticatedPetsRouteImport.update({
-  id: '/pets',
-  path: '/pets',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
-const AuthenticatedNavioRoute = AuthenticatedNavioRouteImport.update({
-  id: '/navio',
-  path: '/navio',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
-const AuthenticatedEstoqueRoute = AuthenticatedEstoqueRouteImport.update({
-  id: '/estoque',
-  path: '/estoque',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
-const AuthenticatedDashboardRoute = AuthenticatedDashboardRouteImport.update({
-  id: '/dashboard',
-  path: '/dashboard',
-  getParentRoute: () => AuthenticatedRoute,
-} as any)
-const AdmindevWoptcgIndexRoute = AdmindevWoptcgIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => AdmindevWoptcgRoute,
-} as any)
-const AdmindevNpcsIndexRoute = AdmindevNpcsIndexRouteImport.update({
-  id: '/npcs/',
-  path: '/npcs/',
-  getParentRoute: () => AdmindevRoute,
-} as any)
-const AdmindevCrewsIndexRoute = AdmindevCrewsIndexRouteImport.update({
-  id: '/crews/',
-  path: '/crews/',
-  getParentRoute: () => AdmindevRoute,
-} as any)
-const AdminWoptcgIndexRoute = AdminWoptcgIndexRouteImport.update({
-  id: '/',
-  path: '/',
-  getParentRoute: () => AdminWoptcgRoute,
-} as any)
-const AdminNpcsIndexRoute = AdminNpcsIndexRouteImport.update({
-  id: '/npcs/',
-  path: '/npcs/',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AdminCrewsIndexRoute = AdminCrewsIndexRouteImport.update({
-  id: '/crews/',
-  path: '/crews/',
-  getParentRoute: () => AdminRoute,
 } as any)
 const AuthenticatedPersonagensIndexRoute =
   AuthenticatedPersonagensIndexRouteImport.update({
@@ -255,19 +233,90 @@ const AuthenticatedPersonagensIndexRoute =
     path: '/personagens/',
     getParentRoute: () => AuthenticatedRoute,
   } as any)
-const TcggameProfileNicknameRoute = TcggameProfileNicknameRouteImport.update({
-  id: '/profile/$nickname',
-  path: '/profile/$nickname',
-  getParentRoute: () => TcggameRoute,
+const AuthenticatedPersonagensIdRoute =
+  AuthenticatedPersonagensIdRouteImport.update({
+    id: '/personagens/$id',
+    path: '/personagens/$id',
+    getParentRoute: () => AuthenticatedRoute,
+  } as any)
+const AdminCrewsIndexRoute = AdminCrewsIndexRouteImport.update({
+  id: '/crews/',
+  path: '/crews/',
+  getParentRoute: () => AdminRoute,
 } as any)
-const AdmindevWoptcgJogadoresRoute = AdmindevWoptcgJogadoresRouteImport.update({
-  id: '/jogadores',
-  path: '/jogadores',
-  getParentRoute: () => AdmindevWoptcgRoute,
+const AdminCrewsIdRoute = AdminCrewsIdRouteImport.update({
+  id: '/crews/$id',
+  path: '/crews/$id',
+  getParentRoute: () => AdminRoute,
 } as any)
-const AdmindevWoptcgCartasRoute = AdmindevWoptcgCartasRouteImport.update({
+const AdminNpcsIndexRoute = AdminNpcsIndexRouteImport.update({
+  id: '/npcs/',
+  path: '/npcs/',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminNpcsIdRoute = AdminNpcsIdRouteImport.update({
+  id: '/npcs/$id',
+  path: '/npcs/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminPlayersIdRoute = AdminPlayersIdRouteImport.update({
+  id: '/players/$id',
+  path: '/players/$id',
+  getParentRoute: () => AdminRoute,
+} as any)
+const AdminWoptcgIndexRoute = AdminWoptcgIndexRouteImport.update({
+  id: '/',
+  path: '/',
+  getParentRoute: () => AdminWoptcgRoute,
+} as any)
+const AdminWoptcgBannerdueloRoute = AdminWoptcgBannerdueloRouteImport.update({
+  id: '/bannerduelo',
+  path: '/bannerduelo',
+  getParentRoute: () => AdminWoptcgRoute,
+} as any)
+const AdminWoptcgCartasRoute = AdminWoptcgCartasRouteImport.update({
   id: '/cartas',
   path: '/cartas',
+  getParentRoute: () => AdminWoptcgRoute,
+} as any)
+const AdminWoptcgJogadoresRoute = AdminWoptcgJogadoresRouteImport.update({
+  id: '/jogadores',
+  path: '/jogadores',
+  getParentRoute: () => AdminWoptcgRoute,
+} as any)
+const AdminWoptcgLojaRoute = AdminWoptcgLojaRouteImport.update({
+  id: '/loja',
+  path: '/loja',
+  getParentRoute: () => AdminWoptcgRoute,
+} as any)
+const AdmindevCrewsIndexRoute = AdmindevCrewsIndexRouteImport.update({
+  id: '/crews/',
+  path: '/crews/',
+  getParentRoute: () => AdmindevRoute,
+} as any)
+const AdmindevCrewsIdRoute = AdmindevCrewsIdRouteImport.update({
+  id: '/crews/$id',
+  path: '/crews/$id',
+  getParentRoute: () => AdmindevRoute,
+} as any)
+const AdmindevNpcsIndexRoute = AdmindevNpcsIndexRouteImport.update({
+  id: '/npcs/',
+  path: '/npcs/',
+  getParentRoute: () => AdmindevRoute,
+} as any)
+const AdmindevNpcsIdRoute = AdmindevNpcsIdRouteImport.update({
+  id: '/npcs/$id',
+  path: '/npcs/$id',
+  getParentRoute: () => AdmindevRoute,
+} as any)
+const AdmindevPlayersIdRoute = AdmindevPlayersIdRouteImport.update({
+  id: '/players/$id',
+  path: '/players/$id',
+  getParentRoute: () => AdmindevRoute,
+} as any)
+const AdmindevWoptcgIndexRoute = AdmindevWoptcgIndexRouteImport.update({
+  id: '/',
+  path: '/',
   getParentRoute: () => AdmindevWoptcgRoute,
 } as any)
 const AdmindevWoptcgBannerdueloRoute =
@@ -276,68 +325,37 @@ const AdmindevWoptcgBannerdueloRoute =
     path: '/bannerduelo',
     getParentRoute: () => AdmindevWoptcgRoute,
   } as any)
-const AdmindevPlayersIdRoute = AdmindevPlayersIdRouteImport.update({
-  id: '/players/$id',
-  path: '/players/$id',
-  getParentRoute: () => AdmindevRoute,
-} as any)
-const AdmindevNpcsIdRoute = AdmindevNpcsIdRouteImport.update({
-  id: '/npcs/$id',
-  path: '/npcs/$id',
-  getParentRoute: () => AdmindevRoute,
-} as any)
-const AdmindevCrewsIdRoute = AdmindevCrewsIdRouteImport.update({
-  id: '/crews/$id',
-  path: '/crews/$id',
-  getParentRoute: () => AdmindevRoute,
-} as any)
-const AdminWoptcgJogadoresRoute = AdminWoptcgJogadoresRouteImport.update({
-  id: '/jogadores',
-  path: '/jogadores',
-  getParentRoute: () => AdminWoptcgRoute,
-} as any)
-const AdminWoptcgCartasRoute = AdminWoptcgCartasRouteImport.update({
+const AdmindevWoptcgCartasRoute = AdmindevWoptcgCartasRouteImport.update({
   id: '/cartas',
   path: '/cartas',
-  getParentRoute: () => AdminWoptcgRoute,
+  getParentRoute: () => AdmindevWoptcgRoute,
 } as any)
-const AdminWoptcgBannerdueloRoute = AdminWoptcgBannerdueloRouteImport.update({
-  id: '/bannerduelo',
-  path: '/bannerduelo',
-  getParentRoute: () => AdminWoptcgRoute,
+const AdmindevWoptcgJogadoresRoute = AdmindevWoptcgJogadoresRouteImport.update({
+  id: '/jogadores',
+  path: '/jogadores',
+  getParentRoute: () => AdmindevWoptcgRoute,
 } as any)
-const AdminPlayersIdRoute = AdminPlayersIdRouteImport.update({
-  id: '/players/$id',
-  path: '/players/$id',
-  getParentRoute: () => AdminRoute,
+const AdmindevWoptcgLojaRoute = AdmindevWoptcgLojaRouteImport.update({
+  id: '/loja',
+  path: '/loja',
+  getParentRoute: () => AdmindevWoptcgRoute,
 } as any)
-const AdminNpcsIdRoute = AdminNpcsIdRouteImport.update({
-  id: '/npcs/$id',
-  path: '/npcs/$id',
-  getParentRoute: () => AdminRoute,
+const TcggameProfileNicknameRoute = TcggameProfileNicknameRouteImport.update({
+  id: '/profile/$nickname',
+  path: '/profile/$nickname',
+  getParentRoute: () => TcggameRoute,
 } as any)
-const AdminCrewsIdRoute = AdminCrewsIdRouteImport.update({
-  id: '/crews/$id',
-  path: '/crews/$id',
-  getParentRoute: () => AdminRoute,
-} as any)
-const AuthenticatedPersonagensIdRoute =
-  AuthenticatedPersonagensIdRouteImport.update({
-    id: '/personagens/$id',
-    path: '/personagens/$id',
-    getParentRoute: () => AuthenticatedRoute,
+const AdminWoptcgJogadorUserIdRoute =
+  AdminWoptcgJogadorUserIdRouteImport.update({
+    id: '/jogador/$userId',
+    path: '/jogador/$userId',
+    getParentRoute: () => AdminWoptcgRoute,
   } as any)
 const AdmindevWoptcgJogadorUserIdRoute =
   AdmindevWoptcgJogadorUserIdRouteImport.update({
     id: '/jogador/$userId',
     path: '/jogador/$userId',
     getParentRoute: () => AdmindevWoptcgRoute,
-  } as any)
-const AdminWoptcgJogadorUserIdRoute =
-  AdminWoptcgJogadorUserIdRouteImport.update({
-    id: '/jogador/$userId',
-    path: '/jogador/$userId',
-    getParentRoute: () => AdminWoptcgRoute,
   } as any)
 
 export interface FileRoutesByFullPath {
@@ -367,6 +385,7 @@ export interface FileRoutesByFullPath {
   '/tcggame/profile_{$name}': typeof TcggameProfile_Char123nameChar125Route
   '/tcggame/rank': typeof TcggameRankRoute
   '/tcggame/ranking': typeof TcggameRankingRoute
+  '/tcggame/shop': typeof TcggameShopRoute
   '/tcggame/trade': typeof TcggameTradeRoute
   '/admin/': typeof AdminIndexRoute
   '/admindev/': typeof AdmindevIndexRoute
@@ -378,12 +397,14 @@ export interface FileRoutesByFullPath {
   '/admin/woptcg/bannerduelo': typeof AdminWoptcgBannerdueloRoute
   '/admin/woptcg/cartas': typeof AdminWoptcgCartasRoute
   '/admin/woptcg/jogadores': typeof AdminWoptcgJogadoresRoute
+  '/admin/woptcg/loja': typeof AdminWoptcgLojaRoute
   '/admindev/crews/$id': typeof AdmindevCrewsIdRoute
   '/admindev/npcs/$id': typeof AdmindevNpcsIdRoute
   '/admindev/players/$id': typeof AdmindevPlayersIdRoute
   '/admindev/woptcg/bannerduelo': typeof AdmindevWoptcgBannerdueloRoute
   '/admindev/woptcg/cartas': typeof AdmindevWoptcgCartasRoute
   '/admindev/woptcg/jogadores': typeof AdmindevWoptcgJogadoresRoute
+  '/admindev/woptcg/loja': typeof AdmindevWoptcgLojaRoute
   '/tcggame/profile/$nickname': typeof TcggameProfileNicknameRoute
   '/personagens/': typeof AuthenticatedPersonagensIndexRoute
   '/admin/crews/': typeof AdminCrewsIndexRoute
@@ -417,6 +438,7 @@ export interface FileRoutesByTo {
   '/tcggame/profile_{$name}': typeof TcggameProfile_Char123nameChar125Route
   '/tcggame/rank': typeof TcggameRankRoute
   '/tcggame/ranking': typeof TcggameRankingRoute
+  '/tcggame/shop': typeof TcggameShopRoute
   '/tcggame/trade': typeof TcggameTradeRoute
   '/admin': typeof AdminIndexRoute
   '/admindev': typeof AdmindevIndexRoute
@@ -428,12 +450,14 @@ export interface FileRoutesByTo {
   '/admin/woptcg/bannerduelo': typeof AdminWoptcgBannerdueloRoute
   '/admin/woptcg/cartas': typeof AdminWoptcgCartasRoute
   '/admin/woptcg/jogadores': typeof AdminWoptcgJogadoresRoute
+  '/admin/woptcg/loja': typeof AdminWoptcgLojaRoute
   '/admindev/crews/$id': typeof AdmindevCrewsIdRoute
   '/admindev/npcs/$id': typeof AdmindevNpcsIdRoute
   '/admindev/players/$id': typeof AdmindevPlayersIdRoute
   '/admindev/woptcg/bannerduelo': typeof AdmindevWoptcgBannerdueloRoute
   '/admindev/woptcg/cartas': typeof AdmindevWoptcgCartasRoute
   '/admindev/woptcg/jogadores': typeof AdmindevWoptcgJogadoresRoute
+  '/admindev/woptcg/loja': typeof AdmindevWoptcgLojaRoute
   '/tcggame/profile/$nickname': typeof TcggameProfileNicknameRoute
   '/personagens': typeof AuthenticatedPersonagensIndexRoute
   '/admin/crews': typeof AdminCrewsIndexRoute
@@ -474,6 +498,7 @@ export interface FileRoutesById {
   '/tcggame/profile_{$name}': typeof TcggameProfile_Char123nameChar125Route
   '/tcggame/rank': typeof TcggameRankRoute
   '/tcggame/ranking': typeof TcggameRankingRoute
+  '/tcggame/shop': typeof TcggameShopRoute
   '/tcggame/trade': typeof TcggameTradeRoute
   '/admin/': typeof AdminIndexRoute
   '/admindev/': typeof AdmindevIndexRoute
@@ -485,12 +510,14 @@ export interface FileRoutesById {
   '/admin/woptcg/bannerduelo': typeof AdminWoptcgBannerdueloRoute
   '/admin/woptcg/cartas': typeof AdminWoptcgCartasRoute
   '/admin/woptcg/jogadores': typeof AdminWoptcgJogadoresRoute
+  '/admin/woptcg/loja': typeof AdminWoptcgLojaRoute
   '/admindev/crews/$id': typeof AdmindevCrewsIdRoute
   '/admindev/npcs/$id': typeof AdmindevNpcsIdRoute
   '/admindev/players/$id': typeof AdmindevPlayersIdRoute
   '/admindev/woptcg/bannerduelo': typeof AdmindevWoptcgBannerdueloRoute
   '/admindev/woptcg/cartas': typeof AdmindevWoptcgCartasRoute
   '/admindev/woptcg/jogadores': typeof AdmindevWoptcgJogadoresRoute
+  '/admindev/woptcg/loja': typeof AdmindevWoptcgLojaRoute
   '/tcggame/profile/$nickname': typeof TcggameProfileNicknameRoute
   '/_authenticated/personagens/': typeof AuthenticatedPersonagensIndexRoute
   '/admin/crews/': typeof AdminCrewsIndexRoute
@@ -531,6 +558,7 @@ export interface FileRouteTypes {
     | '/tcggame/profile_{$name}'
     | '/tcggame/rank'
     | '/tcggame/ranking'
+    | '/tcggame/shop'
     | '/tcggame/trade'
     | '/admin/'
     | '/admindev/'
@@ -542,12 +570,14 @@ export interface FileRouteTypes {
     | '/admin/woptcg/bannerduelo'
     | '/admin/woptcg/cartas'
     | '/admin/woptcg/jogadores'
+    | '/admin/woptcg/loja'
     | '/admindev/crews/$id'
     | '/admindev/npcs/$id'
     | '/admindev/players/$id'
     | '/admindev/woptcg/bannerduelo'
     | '/admindev/woptcg/cartas'
     | '/admindev/woptcg/jogadores'
+    | '/admindev/woptcg/loja'
     | '/tcggame/profile/$nickname'
     | '/personagens/'
     | '/admin/crews/'
@@ -581,6 +611,7 @@ export interface FileRouteTypes {
     | '/tcggame/profile_{$name}'
     | '/tcggame/rank'
     | '/tcggame/ranking'
+    | '/tcggame/shop'
     | '/tcggame/trade'
     | '/admin'
     | '/admindev'
@@ -592,12 +623,14 @@ export interface FileRouteTypes {
     | '/admin/woptcg/bannerduelo'
     | '/admin/woptcg/cartas'
     | '/admin/woptcg/jogadores'
+    | '/admin/woptcg/loja'
     | '/admindev/crews/$id'
     | '/admindev/npcs/$id'
     | '/admindev/players/$id'
     | '/admindev/woptcg/bannerduelo'
     | '/admindev/woptcg/cartas'
     | '/admindev/woptcg/jogadores'
+    | '/admindev/woptcg/loja'
     | '/tcggame/profile/$nickname'
     | '/personagens'
     | '/admin/crews'
@@ -637,6 +670,7 @@ export interface FileRouteTypes {
     | '/tcggame/profile_{$name}'
     | '/tcggame/rank'
     | '/tcggame/ranking'
+    | '/tcggame/shop'
     | '/tcggame/trade'
     | '/admin/'
     | '/admindev/'
@@ -648,12 +682,14 @@ export interface FileRouteTypes {
     | '/admin/woptcg/bannerduelo'
     | '/admin/woptcg/cartas'
     | '/admin/woptcg/jogadores'
+    | '/admin/woptcg/loja'
     | '/admindev/crews/$id'
     | '/admindev/npcs/$id'
     | '/admindev/players/$id'
     | '/admindev/woptcg/bannerduelo'
     | '/admindev/woptcg/cartas'
     | '/admindev/woptcg/jogadores'
+    | '/admindev/woptcg/loja'
     | '/tcggame/profile/$nickname'
     | '/_authenticated/personagens/'
     | '/admin/crews/'
@@ -678,39 +714,11 @@ export interface RootRouteChildren {
 
 declare module '@tanstack/react-router' {
   interface FileRoutesByPath {
-    '/tcggame': {
-      id: '/tcggame'
-      path: '/tcggame'
-      fullPath: '/tcggame'
-      preLoaderRoute: typeof TcggameRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/entrar': {
-      id: '/entrar'
-      path: '/entrar'
-      fullPath: '/entrar'
-      preLoaderRoute: typeof EntrarRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/cadastro': {
-      id: '/cadastro'
-      path: '/cadastro'
-      fullPath: '/cadastro'
-      preLoaderRoute: typeof CadastroRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admindev': {
-      id: '/admindev'
-      path: '/admindev'
-      fullPath: '/admindev'
-      preLoaderRoute: typeof AdmindevRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/admin': {
-      id: '/admin'
-      path: '/admin'
-      fullPath: '/admin'
-      preLoaderRoute: typeof AdminRouteImport
+    '/': {
+      id: '/'
+      path: '/'
+      fullPath: '/'
+      preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_authenticated': {
@@ -720,165 +728,46 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/': {
-      id: '/'
-      path: '/'
-      fullPath: '/'
-      preLoaderRoute: typeof IndexRouteImport
+    '/admin': {
+      id: '/admin'
+      path: '/admin'
+      fullPath: '/admin'
+      preLoaderRoute: typeof AdminRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/tcggame/': {
-      id: '/tcggame/'
-      path: '/'
-      fullPath: '/tcggame/'
-      preLoaderRoute: typeof TcggameIndexRouteImport
-      parentRoute: typeof TcggameRoute
+    '/admindev': {
+      id: '/admindev'
+      path: '/admindev'
+      fullPath: '/admindev'
+      preLoaderRoute: typeof AdmindevRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/admindev/': {
-      id: '/admindev/'
-      path: '/'
-      fullPath: '/admindev/'
-      preLoaderRoute: typeof AdmindevIndexRouteImport
-      parentRoute: typeof AdmindevRoute
+    '/cadastro': {
+      id: '/cadastro'
+      path: '/cadastro'
+      fullPath: '/cadastro'
+      preLoaderRoute: typeof CadastroRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/admin/': {
-      id: '/admin/'
-      path: '/'
-      fullPath: '/admin/'
-      preLoaderRoute: typeof AdminIndexRouteImport
-      parentRoute: typeof AdminRoute
+    '/entrar': {
+      id: '/entrar'
+      path: '/entrar'
+      fullPath: '/entrar'
+      preLoaderRoute: typeof EntrarRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/tcggame/trade': {
-      id: '/tcggame/trade'
-      path: '/trade'
-      fullPath: '/tcggame/trade'
-      preLoaderRoute: typeof TcggameTradeRouteImport
-      parentRoute: typeof TcggameRoute
+    '/tcggame': {
+      id: '/tcggame'
+      path: '/tcggame'
+      fullPath: '/tcggame'
+      preLoaderRoute: typeof TcggameRouteImport
+      parentRoute: typeof rootRouteImport
     }
-    '/tcggame/ranking': {
-      id: '/tcggame/ranking'
-      path: '/ranking'
-      fullPath: '/tcggame/ranking'
-      preLoaderRoute: typeof TcggameRankingRouteImport
-      parentRoute: typeof TcggameRoute
-    }
-    '/tcggame/rank': {
-      id: '/tcggame/rank'
-      path: '/rank'
-      fullPath: '/tcggame/rank'
-      preLoaderRoute: typeof TcggameRankRouteImport
-      parentRoute: typeof TcggameRoute
-    }
-    '/tcggame/profile_{$name}': {
-      id: '/tcggame/profile_{$name}'
-      path: '/profile_{$name}'
-      fullPath: '/tcggame/profile_{$name}'
-      preLoaderRoute: typeof TcggameProfile_Char123nameChar125RouteImport
-      parentRoute: typeof TcggameRoute
-    }
-    '/tcggame/duels': {
-      id: '/tcggame/duels'
-      path: '/duels'
-      fullPath: '/tcggame/duels'
-      preLoaderRoute: typeof TcggameDuelsRouteImport
-      parentRoute: typeof TcggameRoute
-    }
-    '/tcggame/decks': {
-      id: '/tcggame/decks'
-      path: '/decks'
-      fullPath: '/tcggame/decks'
-      preLoaderRoute: typeof TcggameDecksRouteImport
-      parentRoute: typeof TcggameRoute
-    }
-    '/tcggame/daily': {
-      id: '/tcggame/daily'
-      path: '/daily'
-      fullPath: '/tcggame/daily'
-      preLoaderRoute: typeof TcggameDailyRouteImport
-      parentRoute: typeof TcggameRoute
-    }
-    '/tcggame/craft': {
-      id: '/tcggame/craft'
-      path: '/craft'
-      fullPath: '/tcggame/craft'
-      preLoaderRoute: typeof TcggameCraftRouteImport
-      parentRoute: typeof TcggameRoute
-    }
-    '/tcggame/cards': {
-      id: '/tcggame/cards'
-      path: '/cards'
-      fullPath: '/tcggame/cards'
-      preLoaderRoute: typeof TcggameCardsRouteImport
-      parentRoute: typeof TcggameRoute
-    }
-    '/tcggame/achievements': {
-      id: '/tcggame/achievements'
-      path: '/achievements'
-      fullPath: '/tcggame/achievements'
-      preLoaderRoute: typeof TcggameAchievementsRouteImport
-      parentRoute: typeof TcggameRoute
-    }
-    '/admindev/woptcg': {
-      id: '/admindev/woptcg'
-      path: '/woptcg'
-      fullPath: '/admindev/woptcg'
-      preLoaderRoute: typeof AdmindevWoptcgRouteImport
-      parentRoute: typeof AdmindevRoute
-    }
-    '/admindev/requests': {
-      id: '/admindev/requests'
-      path: '/requests'
-      fullPath: '/admindev/requests'
-      preLoaderRoute: typeof AdmindevRequestsRouteImport
-      parentRoute: typeof AdmindevRoute
-    }
-    '/admindev/items': {
-      id: '/admindev/items'
-      path: '/items'
-      fullPath: '/admindev/items'
-      preLoaderRoute: typeof AdmindevItemsRouteImport
-      parentRoute: typeof AdmindevRoute
-    }
-    '/admin/woptcg': {
-      id: '/admin/woptcg'
-      path: '/woptcg'
-      fullPath: '/admin/woptcg'
-      preLoaderRoute: typeof AdminWoptcgRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/requests': {
-      id: '/admin/requests'
-      path: '/requests'
-      fullPath: '/admin/requests'
-      preLoaderRoute: typeof AdminRequestsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/items': {
-      id: '/admin/items'
-      path: '/items'
-      fullPath: '/admin/items'
-      preLoaderRoute: typeof AdminItemsRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/_authenticated/tripulacao': {
-      id: '/_authenticated/tripulacao'
-      path: '/tripulacao'
-      fullPath: '/tripulacao'
-      preLoaderRoute: typeof AuthenticatedTripulacaoRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/pets': {
-      id: '/_authenticated/pets'
-      path: '/pets'
-      fullPath: '/pets'
-      preLoaderRoute: typeof AuthenticatedPetsRouteImport
-      parentRoute: typeof AuthenticatedRoute
-    }
-    '/_authenticated/navio': {
-      id: '/_authenticated/navio'
-      path: '/navio'
-      fullPath: '/navio'
-      preLoaderRoute: typeof AuthenticatedNavioRouteImport
+    '/_authenticated/dashboard': {
+      id: '/_authenticated/dashboard'
+      path: '/dashboard'
+      fullPath: '/dashboard'
+      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
     '/_authenticated/estoque': {
@@ -888,54 +777,166 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedEstoqueRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/_authenticated/dashboard': {
-      id: '/_authenticated/dashboard'
-      path: '/dashboard'
-      fullPath: '/dashboard'
-      preLoaderRoute: typeof AuthenticatedDashboardRouteImport
+    '/_authenticated/navio': {
+      id: '/_authenticated/navio'
+      path: '/navio'
+      fullPath: '/navio'
+      preLoaderRoute: typeof AuthenticatedNavioRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/admindev/woptcg/': {
-      id: '/admindev/woptcg/'
+    '/_authenticated/pets': {
+      id: '/_authenticated/pets'
+      path: '/pets'
+      fullPath: '/pets'
+      preLoaderRoute: typeof AuthenticatedPetsRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/_authenticated/tripulacao': {
+      id: '/_authenticated/tripulacao'
+      path: '/tripulacao'
+      fullPath: '/tripulacao'
+      preLoaderRoute: typeof AuthenticatedTripulacaoRouteImport
+      parentRoute: typeof AuthenticatedRoute
+    }
+    '/admin/': {
+      id: '/admin/'
       path: '/'
-      fullPath: '/admindev/woptcg/'
-      preLoaderRoute: typeof AdmindevWoptcgIndexRouteImport
-      parentRoute: typeof AdmindevWoptcgRoute
-    }
-    '/admindev/npcs/': {
-      id: '/admindev/npcs/'
-      path: '/npcs'
-      fullPath: '/admindev/npcs/'
-      preLoaderRoute: typeof AdmindevNpcsIndexRouteImport
-      parentRoute: typeof AdmindevRoute
-    }
-    '/admindev/crews/': {
-      id: '/admindev/crews/'
-      path: '/crews'
-      fullPath: '/admindev/crews/'
-      preLoaderRoute: typeof AdmindevCrewsIndexRouteImport
-      parentRoute: typeof AdmindevRoute
-    }
-    '/admin/woptcg/': {
-      id: '/admin/woptcg/'
-      path: '/'
-      fullPath: '/admin/woptcg/'
-      preLoaderRoute: typeof AdminWoptcgIndexRouteImport
-      parentRoute: typeof AdminWoptcgRoute
-    }
-    '/admin/npcs/': {
-      id: '/admin/npcs/'
-      path: '/npcs'
-      fullPath: '/admin/npcs/'
-      preLoaderRoute: typeof AdminNpcsIndexRouteImport
+      fullPath: '/admin/'
+      preLoaderRoute: typeof AdminIndexRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/admin/crews/': {
-      id: '/admin/crews/'
-      path: '/crews'
-      fullPath: '/admin/crews/'
-      preLoaderRoute: typeof AdminCrewsIndexRouteImport
+    '/admin/items': {
+      id: '/admin/items'
+      path: '/items'
+      fullPath: '/admin/items'
+      preLoaderRoute: typeof AdminItemsRouteImport
       parentRoute: typeof AdminRoute
+    }
+    '/admin/requests': {
+      id: '/admin/requests'
+      path: '/requests'
+      fullPath: '/admin/requests'
+      preLoaderRoute: typeof AdminRequestsRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/woptcg': {
+      id: '/admin/woptcg'
+      path: '/woptcg'
+      fullPath: '/admin/woptcg'
+      preLoaderRoute: typeof AdminWoptcgRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admindev/': {
+      id: '/admindev/'
+      path: '/'
+      fullPath: '/admindev/'
+      preLoaderRoute: typeof AdmindevIndexRouteImport
+      parentRoute: typeof AdmindevRoute
+    }
+    '/admindev/items': {
+      id: '/admindev/items'
+      path: '/items'
+      fullPath: '/admindev/items'
+      preLoaderRoute: typeof AdmindevItemsRouteImport
+      parentRoute: typeof AdmindevRoute
+    }
+    '/admindev/requests': {
+      id: '/admindev/requests'
+      path: '/requests'
+      fullPath: '/admindev/requests'
+      preLoaderRoute: typeof AdmindevRequestsRouteImport
+      parentRoute: typeof AdmindevRoute
+    }
+    '/admindev/woptcg': {
+      id: '/admindev/woptcg'
+      path: '/woptcg'
+      fullPath: '/admindev/woptcg'
+      preLoaderRoute: typeof AdmindevWoptcgRouteImport
+      parentRoute: typeof AdmindevRoute
+    }
+    '/tcggame/': {
+      id: '/tcggame/'
+      path: '/'
+      fullPath: '/tcggame/'
+      preLoaderRoute: typeof TcggameIndexRouteImport
+      parentRoute: typeof TcggameRoute
+    }
+    '/tcggame/achievements': {
+      id: '/tcggame/achievements'
+      path: '/achievements'
+      fullPath: '/tcggame/achievements'
+      preLoaderRoute: typeof TcggameAchievementsRouteImport
+      parentRoute: typeof TcggameRoute
+    }
+    '/tcggame/cards': {
+      id: '/tcggame/cards'
+      path: '/cards'
+      fullPath: '/tcggame/cards'
+      preLoaderRoute: typeof TcggameCardsRouteImport
+      parentRoute: typeof TcggameRoute
+    }
+    '/tcggame/craft': {
+      id: '/tcggame/craft'
+      path: '/craft'
+      fullPath: '/tcggame/craft'
+      preLoaderRoute: typeof TcggameCraftRouteImport
+      parentRoute: typeof TcggameRoute
+    }
+    '/tcggame/daily': {
+      id: '/tcggame/daily'
+      path: '/daily'
+      fullPath: '/tcggame/daily'
+      preLoaderRoute: typeof TcggameDailyRouteImport
+      parentRoute: typeof TcggameRoute
+    }
+    '/tcggame/decks': {
+      id: '/tcggame/decks'
+      path: '/decks'
+      fullPath: '/tcggame/decks'
+      preLoaderRoute: typeof TcggameDecksRouteImport
+      parentRoute: typeof TcggameRoute
+    }
+    '/tcggame/duels': {
+      id: '/tcggame/duels'
+      path: '/duels'
+      fullPath: '/tcggame/duels'
+      preLoaderRoute: typeof TcggameDuelsRouteImport
+      parentRoute: typeof TcggameRoute
+    }
+    '/tcggame/profile_{$name}': {
+      id: '/tcggame/profile_{$name}'
+      path: '/profile_{$name}'
+      fullPath: '/tcggame/profile_{$name}'
+      preLoaderRoute: typeof TcggameProfile_Char123nameChar125RouteImport
+      parentRoute: typeof TcggameRoute
+    }
+    '/tcggame/rank': {
+      id: '/tcggame/rank'
+      path: '/rank'
+      fullPath: '/tcggame/rank'
+      preLoaderRoute: typeof TcggameRankRouteImport
+      parentRoute: typeof TcggameRoute
+    }
+    '/tcggame/ranking': {
+      id: '/tcggame/ranking'
+      path: '/ranking'
+      fullPath: '/tcggame/ranking'
+      preLoaderRoute: typeof TcggameRankingRouteImport
+      parentRoute: typeof TcggameRoute
+    }
+    '/tcggame/shop': {
+      id: '/tcggame/shop'
+      path: '/shop'
+      fullPath: '/tcggame/shop'
+      preLoaderRoute: typeof TcggameShopRouteImport
+      parentRoute: typeof TcggameRoute
+    }
+    '/tcggame/trade': {
+      id: '/tcggame/trade'
+      path: '/trade'
+      fullPath: '/tcggame/trade'
+      preLoaderRoute: typeof TcggameTradeRouteImport
+      parentRoute: typeof TcggameRoute
     }
     '/_authenticated/personagens/': {
       id: '/_authenticated/personagens/'
@@ -944,88 +945,18 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AuthenticatedPersonagensIndexRouteImport
       parentRoute: typeof AuthenticatedRoute
     }
-    '/tcggame/profile/$nickname': {
-      id: '/tcggame/profile/$nickname'
-      path: '/profile/$nickname'
-      fullPath: '/tcggame/profile/$nickname'
-      preLoaderRoute: typeof TcggameProfileNicknameRouteImport
-      parentRoute: typeof TcggameRoute
+    '/_authenticated/personagens/$id': {
+      id: '/_authenticated/personagens/$id'
+      path: '/personagens/$id'
+      fullPath: '/personagens/$id'
+      preLoaderRoute: typeof AuthenticatedPersonagensIdRouteImport
+      parentRoute: typeof AuthenticatedRoute
     }
-    '/admindev/woptcg/jogadores': {
-      id: '/admindev/woptcg/jogadores'
-      path: '/jogadores'
-      fullPath: '/admindev/woptcg/jogadores'
-      preLoaderRoute: typeof AdmindevWoptcgJogadoresRouteImport
-      parentRoute: typeof AdmindevWoptcgRoute
-    }
-    '/admindev/woptcg/cartas': {
-      id: '/admindev/woptcg/cartas'
-      path: '/cartas'
-      fullPath: '/admindev/woptcg/cartas'
-      preLoaderRoute: typeof AdmindevWoptcgCartasRouteImport
-      parentRoute: typeof AdmindevWoptcgRoute
-    }
-    '/admindev/woptcg/bannerduelo': {
-      id: '/admindev/woptcg/bannerduelo'
-      path: '/bannerduelo'
-      fullPath: '/admindev/woptcg/bannerduelo'
-      preLoaderRoute: typeof AdmindevWoptcgBannerdueloRouteImport
-      parentRoute: typeof AdmindevWoptcgRoute
-    }
-    '/admindev/players/$id': {
-      id: '/admindev/players/$id'
-      path: '/players/$id'
-      fullPath: '/admindev/players/$id'
-      preLoaderRoute: typeof AdmindevPlayersIdRouteImport
-      parentRoute: typeof AdmindevRoute
-    }
-    '/admindev/npcs/$id': {
-      id: '/admindev/npcs/$id'
-      path: '/npcs/$id'
-      fullPath: '/admindev/npcs/$id'
-      preLoaderRoute: typeof AdmindevNpcsIdRouteImport
-      parentRoute: typeof AdmindevRoute
-    }
-    '/admindev/crews/$id': {
-      id: '/admindev/crews/$id'
-      path: '/crews/$id'
-      fullPath: '/admindev/crews/$id'
-      preLoaderRoute: typeof AdmindevCrewsIdRouteImport
-      parentRoute: typeof AdmindevRoute
-    }
-    '/admin/woptcg/jogadores': {
-      id: '/admin/woptcg/jogadores'
-      path: '/jogadores'
-      fullPath: '/admin/woptcg/jogadores'
-      preLoaderRoute: typeof AdminWoptcgJogadoresRouteImport
-      parentRoute: typeof AdminWoptcgRoute
-    }
-    '/admin/woptcg/cartas': {
-      id: '/admin/woptcg/cartas'
-      path: '/cartas'
-      fullPath: '/admin/woptcg/cartas'
-      preLoaderRoute: typeof AdminWoptcgCartasRouteImport
-      parentRoute: typeof AdminWoptcgRoute
-    }
-    '/admin/woptcg/bannerduelo': {
-      id: '/admin/woptcg/bannerduelo'
-      path: '/bannerduelo'
-      fullPath: '/admin/woptcg/bannerduelo'
-      preLoaderRoute: typeof AdminWoptcgBannerdueloRouteImport
-      parentRoute: typeof AdminWoptcgRoute
-    }
-    '/admin/players/$id': {
-      id: '/admin/players/$id'
-      path: '/players/$id'
-      fullPath: '/admin/players/$id'
-      preLoaderRoute: typeof AdminPlayersIdRouteImport
-      parentRoute: typeof AdminRoute
-    }
-    '/admin/npcs/$id': {
-      id: '/admin/npcs/$id'
-      path: '/npcs/$id'
-      fullPath: '/admin/npcs/$id'
-      preLoaderRoute: typeof AdminNpcsIdRouteImport
+    '/admin/crews/': {
+      id: '/admin/crews/'
+      path: '/crews'
+      fullPath: '/admin/crews/'
+      preLoaderRoute: typeof AdminCrewsIndexRouteImport
       parentRoute: typeof AdminRoute
     }
     '/admin/crews/$id': {
@@ -1035,19 +966,138 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminCrewsIdRouteImport
       parentRoute: typeof AdminRoute
     }
-    '/_authenticated/personagens/$id': {
-      id: '/_authenticated/personagens/$id'
-      path: '/personagens/$id'
-      fullPath: '/personagens/$id'
-      preLoaderRoute: typeof AuthenticatedPersonagensIdRouteImport
-      parentRoute: typeof AuthenticatedRoute
+    '/admin/npcs/': {
+      id: '/admin/npcs/'
+      path: '/npcs'
+      fullPath: '/admin/npcs/'
+      preLoaderRoute: typeof AdminNpcsIndexRouteImport
+      parentRoute: typeof AdminRoute
     }
-    '/admindev/woptcg/jogador/$userId': {
-      id: '/admindev/woptcg/jogador/$userId'
-      path: '/jogador/$userId'
-      fullPath: '/admindev/woptcg/jogador/$userId'
-      preLoaderRoute: typeof AdmindevWoptcgJogadorUserIdRouteImport
+    '/admin/npcs/$id': {
+      id: '/admin/npcs/$id'
+      path: '/npcs/$id'
+      fullPath: '/admin/npcs/$id'
+      preLoaderRoute: typeof AdminNpcsIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/players/$id': {
+      id: '/admin/players/$id'
+      path: '/players/$id'
+      fullPath: '/admin/players/$id'
+      preLoaderRoute: typeof AdminPlayersIdRouteImport
+      parentRoute: typeof AdminRoute
+    }
+    '/admin/woptcg/': {
+      id: '/admin/woptcg/'
+      path: '/'
+      fullPath: '/admin/woptcg/'
+      preLoaderRoute: typeof AdminWoptcgIndexRouteImport
+      parentRoute: typeof AdminWoptcgRoute
+    }
+    '/admin/woptcg/bannerduelo': {
+      id: '/admin/woptcg/bannerduelo'
+      path: '/bannerduelo'
+      fullPath: '/admin/woptcg/bannerduelo'
+      preLoaderRoute: typeof AdminWoptcgBannerdueloRouteImport
+      parentRoute: typeof AdminWoptcgRoute
+    }
+    '/admin/woptcg/cartas': {
+      id: '/admin/woptcg/cartas'
+      path: '/cartas'
+      fullPath: '/admin/woptcg/cartas'
+      preLoaderRoute: typeof AdminWoptcgCartasRouteImport
+      parentRoute: typeof AdminWoptcgRoute
+    }
+    '/admin/woptcg/jogadores': {
+      id: '/admin/woptcg/jogadores'
+      path: '/jogadores'
+      fullPath: '/admin/woptcg/jogadores'
+      preLoaderRoute: typeof AdminWoptcgJogadoresRouteImport
+      parentRoute: typeof AdminWoptcgRoute
+    }
+    '/admin/woptcg/loja': {
+      id: '/admin/woptcg/loja'
+      path: '/loja'
+      fullPath: '/admin/woptcg/loja'
+      preLoaderRoute: typeof AdminWoptcgLojaRouteImport
+      parentRoute: typeof AdminWoptcgRoute
+    }
+    '/admindev/crews/': {
+      id: '/admindev/crews/'
+      path: '/crews'
+      fullPath: '/admindev/crews/'
+      preLoaderRoute: typeof AdmindevCrewsIndexRouteImport
+      parentRoute: typeof AdmindevRoute
+    }
+    '/admindev/crews/$id': {
+      id: '/admindev/crews/$id'
+      path: '/crews/$id'
+      fullPath: '/admindev/crews/$id'
+      preLoaderRoute: typeof AdmindevCrewsIdRouteImport
+      parentRoute: typeof AdmindevRoute
+    }
+    '/admindev/npcs/': {
+      id: '/admindev/npcs/'
+      path: '/npcs'
+      fullPath: '/admindev/npcs/'
+      preLoaderRoute: typeof AdmindevNpcsIndexRouteImport
+      parentRoute: typeof AdmindevRoute
+    }
+    '/admindev/npcs/$id': {
+      id: '/admindev/npcs/$id'
+      path: '/npcs/$id'
+      fullPath: '/admindev/npcs/$id'
+      preLoaderRoute: typeof AdmindevNpcsIdRouteImport
+      parentRoute: typeof AdmindevRoute
+    }
+    '/admindev/players/$id': {
+      id: '/admindev/players/$id'
+      path: '/players/$id'
+      fullPath: '/admindev/players/$id'
+      preLoaderRoute: typeof AdmindevPlayersIdRouteImport
+      parentRoute: typeof AdmindevRoute
+    }
+    '/admindev/woptcg/': {
+      id: '/admindev/woptcg/'
+      path: '/'
+      fullPath: '/admindev/woptcg/'
+      preLoaderRoute: typeof AdmindevWoptcgIndexRouteImport
       parentRoute: typeof AdmindevWoptcgRoute
+    }
+    '/admindev/woptcg/bannerduelo': {
+      id: '/admindev/woptcg/bannerduelo'
+      path: '/bannerduelo'
+      fullPath: '/admindev/woptcg/bannerduelo'
+      preLoaderRoute: typeof AdmindevWoptcgBannerdueloRouteImport
+      parentRoute: typeof AdmindevWoptcgRoute
+    }
+    '/admindev/woptcg/cartas': {
+      id: '/admindev/woptcg/cartas'
+      path: '/cartas'
+      fullPath: '/admindev/woptcg/cartas'
+      preLoaderRoute: typeof AdmindevWoptcgCartasRouteImport
+      parentRoute: typeof AdmindevWoptcgRoute
+    }
+    '/admindev/woptcg/jogadores': {
+      id: '/admindev/woptcg/jogadores'
+      path: '/jogadores'
+      fullPath: '/admindev/woptcg/jogadores'
+      preLoaderRoute: typeof AdmindevWoptcgJogadoresRouteImport
+      parentRoute: typeof AdmindevWoptcgRoute
+    }
+    '/admindev/woptcg/loja': {
+      id: '/admindev/woptcg/loja'
+      path: '/loja'
+      fullPath: '/admindev/woptcg/loja'
+      preLoaderRoute: typeof AdmindevWoptcgLojaRouteImport
+      parentRoute: typeof AdmindevWoptcgRoute
+    }
+    '/tcggame/profile/$nickname': {
+      id: '/tcggame/profile/$nickname'
+      path: '/profile/$nickname'
+      fullPath: '/tcggame/profile/$nickname'
+      preLoaderRoute: typeof TcggameProfileNicknameRouteImport
+      parentRoute: typeof TcggameRoute
     }
     '/admin/woptcg/jogador/$userId': {
       id: '/admin/woptcg/jogador/$userId'
@@ -1055,6 +1105,13 @@ declare module '@tanstack/react-router' {
       fullPath: '/admin/woptcg/jogador/$userId'
       preLoaderRoute: typeof AdminWoptcgJogadorUserIdRouteImport
       parentRoute: typeof AdminWoptcgRoute
+    }
+    '/admindev/woptcg/jogador/$userId': {
+      id: '/admindev/woptcg/jogador/$userId'
+      path: '/jogador/$userId'
+      fullPath: '/admindev/woptcg/jogador/$userId'
+      preLoaderRoute: typeof AdmindevWoptcgJogadorUserIdRouteImport
+      parentRoute: typeof AdmindevWoptcgRoute
     }
   }
 }
@@ -1087,6 +1144,7 @@ interface AdminWoptcgRouteChildren {
   AdminWoptcgBannerdueloRoute: typeof AdminWoptcgBannerdueloRoute
   AdminWoptcgCartasRoute: typeof AdminWoptcgCartasRoute
   AdminWoptcgJogadoresRoute: typeof AdminWoptcgJogadoresRoute
+  AdminWoptcgLojaRoute: typeof AdminWoptcgLojaRoute
   AdminWoptcgIndexRoute: typeof AdminWoptcgIndexRoute
   AdminWoptcgJogadorUserIdRoute: typeof AdminWoptcgJogadorUserIdRoute
 }
@@ -1095,6 +1153,7 @@ const AdminWoptcgRouteChildren: AdminWoptcgRouteChildren = {
   AdminWoptcgBannerdueloRoute: AdminWoptcgBannerdueloRoute,
   AdminWoptcgCartasRoute: AdminWoptcgCartasRoute,
   AdminWoptcgJogadoresRoute: AdminWoptcgJogadoresRoute,
+  AdminWoptcgLojaRoute: AdminWoptcgLojaRoute,
   AdminWoptcgIndexRoute: AdminWoptcgIndexRoute,
   AdminWoptcgJogadorUserIdRoute: AdminWoptcgJogadorUserIdRoute,
 }
@@ -1133,6 +1192,7 @@ interface AdmindevWoptcgRouteChildren {
   AdmindevWoptcgBannerdueloRoute: typeof AdmindevWoptcgBannerdueloRoute
   AdmindevWoptcgCartasRoute: typeof AdmindevWoptcgCartasRoute
   AdmindevWoptcgJogadoresRoute: typeof AdmindevWoptcgJogadoresRoute
+  AdmindevWoptcgLojaRoute: typeof AdmindevWoptcgLojaRoute
   AdmindevWoptcgIndexRoute: typeof AdmindevWoptcgIndexRoute
   AdmindevWoptcgJogadorUserIdRoute: typeof AdmindevWoptcgJogadorUserIdRoute
 }
@@ -1141,6 +1201,7 @@ const AdmindevWoptcgRouteChildren: AdmindevWoptcgRouteChildren = {
   AdmindevWoptcgBannerdueloRoute: AdmindevWoptcgBannerdueloRoute,
   AdmindevWoptcgCartasRoute: AdmindevWoptcgCartasRoute,
   AdmindevWoptcgJogadoresRoute: AdmindevWoptcgJogadoresRoute,
+  AdmindevWoptcgLojaRoute: AdmindevWoptcgLojaRoute,
   AdmindevWoptcgIndexRoute: AdmindevWoptcgIndexRoute,
   AdmindevWoptcgJogadorUserIdRoute: AdmindevWoptcgJogadorUserIdRoute,
 }
@@ -1187,6 +1248,7 @@ interface TcggameRouteChildren {
   TcggameProfile_Char123nameChar125Route: typeof TcggameProfile_Char123nameChar125Route
   TcggameRankRoute: typeof TcggameRankRoute
   TcggameRankingRoute: typeof TcggameRankingRoute
+  TcggameShopRoute: typeof TcggameShopRoute
   TcggameTradeRoute: typeof TcggameTradeRoute
   TcggameIndexRoute: typeof TcggameIndexRoute
   TcggameProfileNicknameRoute: typeof TcggameProfileNicknameRoute
@@ -1203,6 +1265,7 @@ const TcggameRouteChildren: TcggameRouteChildren = {
     TcggameProfile_Char123nameChar125Route,
   TcggameRankRoute: TcggameRankRoute,
   TcggameRankingRoute: TcggameRankingRoute,
+  TcggameShopRoute: TcggameShopRoute,
   TcggameTradeRoute: TcggameTradeRoute,
   TcggameIndexRoute: TcggameIndexRoute,
   TcggameProfileNicknameRoute: TcggameProfileNicknameRoute,
