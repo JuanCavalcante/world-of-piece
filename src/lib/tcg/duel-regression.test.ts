@@ -95,7 +95,7 @@ function mkDuel(p1: TcgCard[], p2: TcgCard[]): DuelState {
  * exercitando o caminho legado de applyEffect.
  */
 function putInHand(s: DuelState, side: "you" | "foe", card: TcgCard, effectCode?: EffectCode): InPlayCard {
-  const tcg = { ...card, cost: 0 };
+  const tcg = { ...card };
   const aux = createPvpDuel("a", [tcg, tcg, tcg, tcg, tcg], "b", [tcg, tcg, tcg, tcg, tcg]);
   const c = aux.you.hand[0];
   if (effectCode) c.effect_code = effectCode;
