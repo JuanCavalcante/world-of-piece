@@ -15,9 +15,12 @@ declare module "bun:test" {
     toBeTruthy(): void;
     toBeFalsy(): void;
     toBeGreaterThan(n: number): void;
+    toBeGreaterThanOrEqual(n: number): void;
     toBeLessThan(n: number): void;
+    toBeLessThanOrEqual(n: number): void;
     toContain(item: unknown): void;
     toHaveLength(n: number): void;
+    readonly not: Matchers;
   }
   export function expect(actual: unknown): Matchers;
 }

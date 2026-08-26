@@ -165,7 +165,7 @@ describe("Regressão — combate básico sem habilidades (comportamento idêntic
   });
 
   test("endTurn passa o turno, incrementa turnCount e startTurn compra 2 e escala PA até 10", () => {
-    const s = mkDuel(fiveFillers(), fiveFillers());
+    const s = mkDuel(plainDeck("A"), plainDeck("B")); // decks cheios: há cartas para comprar
     const foeHandBefore = s.foe.hand.length;
     expect(s.turn).toBe("you");
     endTurn(s);
