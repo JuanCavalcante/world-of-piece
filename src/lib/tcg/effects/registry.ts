@@ -308,3 +308,41 @@ export function runAbility(ctx: AbilityCtx): "ok" | "choice" {
       return "ok";
   }
 }
+
+/**
+ * Chaves de efeito com handler implementado. Serve de trava: todo `effect_key`
+ * cadastrado no catálogo do banco (tabela `effects`) precisa constar aqui,
+ * senão a habilidade seria ignorada silenciosamente em partida.
+ */
+export const HANDLED_EFFECT_KEYS = [
+  // passivos (resolvidos por auras / pipeline de dano)
+  "KEYWORD",
+  "CONDITIONAL_KEYWORD",
+  "IMMUNE_STATUS",
+  "IRREDUCIBLE_BONUS",
+  "DAMAGE_REDUCTION",
+  "THORNS",
+  "AURA_BUFF_ATK",
+  "AURA_BUFF_MAX_HP",
+  // dano
+  "DAMAGE_ON_PLAY",
+  "DAMAGE_PLAYER_ON_PLAY",
+  "DAMAGE_ON_ATTACK",
+  "SPLASH_ON_ATTACK",
+  "DEBUFF_ATK",
+  "SELF_DAMAGE_EOT",
+  // buff / cura
+  "HEAL_ON_PLAY",
+  "HEAL_SELF_EOT",
+  "BUFF_MAX_HP",
+  "BUFF_ATK",
+  "COPY_ATK_ON_PLAY",
+  // status
+  "GRANT_STATUS",
+  "CLEANSE",
+  "REMOVE_GUARD_ON_ATTACK",
+  // especial
+  "ON_ANY_DEATH_TRIGGER",
+] as const;
+
+export type HandledEffectKey = (typeof HANDLED_EFFECT_KEYS)[number];
