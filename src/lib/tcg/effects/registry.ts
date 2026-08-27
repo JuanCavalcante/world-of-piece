@@ -163,6 +163,11 @@ export function runAbility(ctx: AbilityCtx): "ok" | "choice" {
       if (slot !== -1) dealCardDamage(s, emit, side, slot, num(p["amount"], 1), { label: ability.name });
       return "ok";
     }
+    case "HEAL_SELF_EOT": {
+      const healed = heal(card, num(p["amount"], 1));
+      if (healed > 0) pushLog(s, side, `Efeito de ${card.name}: recuperou ${healed} HP.`);
+      return "ok";
+    }
 
     /* -------------------------------- BUFF/CURA -------------------------------- */
     case "HEAL_ON_PLAY": {
