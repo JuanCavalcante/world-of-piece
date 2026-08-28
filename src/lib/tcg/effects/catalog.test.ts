@@ -70,7 +70,7 @@ test("HEAL_SELF_EOT cura a própria carta no fim do turno do dono", () => {
     ],
   });
   const fill = () => card({ name: "F", power: 5 });
-  const s: DuelState = createPvpDuel("P1", [regen, fill(), fill(), fill(), fill()], "P2", [fill(), fill(), fill(), fill(), fill()]);
+  const s: DuelState = createPvpDuel("P1", [regen, regen, regen, regen, regen], "P2", [fill(), fill(), fill(), fill(), fill()]);
   const hand = s.you.hand.find((c) => c.name === "Regen");
   expect(hand).toBeDefined();
   s.you.ap = 10;
