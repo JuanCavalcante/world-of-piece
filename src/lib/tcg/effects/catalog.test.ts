@@ -28,3 +28,55 @@ describe("Catálogo de efeitos ↔ motor", () => {
     });
   });
 });
+
+/* Regressão: HEAL_SELF_EOT estava catalogado sem handler no motor. */
+import { createPvpDuel, endTurn, playCard, type DuelState } from "@/lib/tcg/duel";
+import type { TcgCard } from "@/lib/tcg/api";
+
+function card(over: Partial<TcgCard> = {}): TcgCard {
+  return {
+    id: `cat-${Math.random().toString(36).slice(2)}`,
+    name: "Regenerador",
+    rarity: "COMUM",
+    image_url: null,
+    power: 10,
+    effect: null,
+    cost: 0,
+    atk: 1,
+    effect_code: "NONE",
+    type: "Lutador",
+    organization: null,
+    race: null,
+    family: null,
+    status: "ACTIVE",
+    abilities: [],
+    ...over,
+  } as TcgCard;
+}
+
+test("HEAL_SELF_EOT cura a própria carta no fim do turno do dono", () => {
+  const regen = card({
+    name: "Regen",
+    abilities: [
+      {
+        effectKey: "HEAL_SELF_EOT",
+        name: "Regeneração",
+        trigger: "ON_END_TURN",
+        target: "SELF",
+        condition: { type: "NONE", value: null },
+        params: { amount: 3 },
+        slot: 1,
+      },
+    ],
+  });
+  const fill = () => card({ name: "F", power: 5 });
+  const s: DuelState = createPvpDuel("P1", [regen, fill(), fill(), fill(), fill()], "P2", [fill(), fill(), fill(), fill(), fill()]);
+  const hand = s.you.hand.find((c) => c.name === "Regen");
+  expect(hand).toBeDefined();
+  s.you.ap = 10;
+  playCard(s, "you", hand!.uid, 0);
+  const inPlay = s.you.field[0]!;
+  inPlay.ps = 4;
+  endTurn(s);
+  expect(s.you.field[0]!.ps).toBe(7);
+});
